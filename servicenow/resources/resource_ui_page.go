@@ -1,54 +1,55 @@
 package resources
 
 import (
-	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/coveo/terraform-provider-servicenow/servicenow/client"
+	"github.com/hashicorp/terraform/helper/schema"
 )
 
-const NAME = "name"
-const DESCRIPTION = "description"
-const CATEGORY = "category"
-const DIRECT = "direct"
-const CLIENT_SCRIPT = "client_script"
-const PROCESSING_SCRIPT = "processing_script"
-const HTML = "html"
+const name = "name"
+const description = "description"
+const category = "category"
+const direct = "direct"
+const clientScript = "client_script"
+const processingScript = "processing_script"
+const html = "html"
 
+// Resource to manage a UI Page in ServiceNow.
 func ResourceUiPage() *schema.Resource {
-	return &schema.Resource {
+	return &schema.Resource{
 		Create: resourceServerCreate,
 		Read:   resourceServerRead,
 		Update: resourceServerUpdate,
 		Delete: resourceServerDelete,
 
-		Schema: map[string]*schema.Schema {
-			NAME: &schema.Schema {
+		Schema: map[string]*schema.Schema{
+			name: {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			DESCRIPTION: &schema.Schema {
+			description: {
 				Type:     schema.TypeString,
 				Optional: true,
-				Default: "",
+				Default:  "",
 			},
-			CATEGORY: &schema.Schema {
+			category: {
 				Type:     schema.TypeString,
 				Optional: true,
-				Default: "general",
+				Default:  "general",
 			},
-			DIRECT: &schema.Schema {
+			direct: {
 				Type:     schema.TypeBool,
 				Optional: true,
-				Default: false,
+				Default:  false,
 			},
-			CLIENT_SCRIPT: &schema.Schema {
+			clientScript: {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			PROCESSING_SCRIPT: &schema.Schema {
+			processingScript: {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			HTML: &schema.Schema {
+			html: {
 				Type:     schema.TypeString,
 				Required: true,
 			},
@@ -97,24 +98,24 @@ func resourceServerDelete(data *schema.ResourceData, serviceNowClient interface{
 
 func updateResourceData(data *schema.ResourceData, page *client.UiPage) {
 	data.SetId(page.Id)
-	data.Set(NAME, page.Name)
-	data.Set(DESCRIPTION, page.Description)
-	data.Set(DIRECT, page.Direct)
-	data.Set(HTML, page.Html)
-	data.Set(PROCESSING_SCRIPT, page.ProcessingScript)
-	data.Set(CLIENT_SCRIPT, page.ClientScript)
-	data.Set(CATEGORY, page.Category)
+	data.Set(name, page.Name)
+	data.Set(description, page.Description)
+	data.Set(direct, page.Direct)
+	data.Set(html, page.Html)
+	data.Set(processingScript, page.ProcessingScript)
+	data.Set(clientScript, page.ClientScript)
+	data.Set(category, page.Category)
 }
 
 func resourceToUiPage(data *schema.ResourceData) *client.UiPage {
-	return &client.UiPage {
-		Id: data.Id(),
-		Name: data.Get(NAME).(string),
-		Description: data.Get(DESCRIPTION).(string),
-		Direct: data.Get(DIRECT).(bool),
-		Html: data.Get(HTML).(string),
-		ProcessingScript: data.Get(PROCESSING_SCRIPT).(string),
-		ClientScript: data.Get(CLIENT_SCRIPT).(string),
-		Category: data.Get(CATEGORY).(string),
+	return &client.UiPage{
+		Id:               data.Id(),
+		Name:             data.Get(name).(string),
+		Description:      data.Get(description).(string),
+		Direct:           data.Get(direct).(bool),
+		Html:             data.Get(html).(string),
+		ProcessingScript: data.Get(processingScript).(string),
+		ClientScript:     data.Get(clientScript).(string),
+		Category:         data.Get(category).(string),
 	}
 }

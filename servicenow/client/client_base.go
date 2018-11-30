@@ -1,18 +1,28 @@
 package client
 
 import (
-	"fmt"
-	"net/http"
 	"bytes"
-	"encoding/json"
 	"encoding/base64"
+	"encoding/json"
+	"fmt"
 	"io/ioutil"
+	"net/http"
 )
 
+// Attributes of the client used to interact with ServiceNow API.
 type ServiceNowClient struct {
-	BaseUrl  string
-	Username string
-	Password string
+	BaseUrl string
+	Auth    string
+}
+
+// Factory method to return a new ServiceNowClient.
+func NewClient(baseUrl string, username string, password string) *ServiceNowClient {
+	// Concatenate username + password to create a basic authorization header.
+	credentials := username + ":" + password
+	return &ServiceNowClient{
+		BaseUrl: baseUrl,
+		Auth:    "Basic " + base64.StdEncoding.EncodeToString([]byte(credentials)),
+	}
 }
 
 func (client *ServiceNowClient) requestJSON(method string, path string, jsonData interface{}) ([]byte, error) {
@@ -25,18 +35,13 @@ func (client *ServiceNowClient) requestJSON(method string, path string, jsonData
 		data = bytes.NewBuffer(nil)
 	}
 
-	request, _ := http.NewRequest(method, client.BaseUrl + path, data)
-	client.formRequest(request, "application/json")
+	request, _ := http.NewRequest(method, client.BaseUrl+path, data)
 
-	return client.getResponse(request)
-}
-
-func (client *ServiceNowClient) formRequest(request *http.Request, contentType string) *http.Request {
-	credentials := client.Username + ":" + client.Password
-	request.Header.Set("Authorization", "Basic " + base64.StdEncoding.EncodeToString([]byte(credentials)))
+	// Add the needed headers.
+	request.Header.Set("Authorization", client.Auth)
 	request.Header.Set("Content-Type", "application/json")
 
-	return request
+	return client.getResponse(request)
 }
 
 func (client *ServiceNowClient) getResponse(request *http.Request) ([]byte, error) {
@@ -52,6 +57,6 @@ func (client *ServiceNowClient) getResponse(request *http.Request) ([]byte, erro
 	if response.StatusCode >= 300 || response.StatusCode < 200 {
 		return nil, fmt.Errorf("Response status %s, %s", response.Status, responseData)
 	}
-	
+
 	return responseData, nil
 }

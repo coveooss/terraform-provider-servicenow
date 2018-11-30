@@ -1,11 +1,12 @@
 package servicenow
 
 import (
-	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/coveo/terraform-provider-servicenow/servicenow/resources"
 	"github.com/coveo/terraform-provider-servicenow/servicenow/client"
+	"github.com/coveo/terraform-provider-servicenow/servicenow/resources"
+	"github.com/hashicorp/terraform/helper/schema"
 )
 
+// Terraform Provider to that manages objects in a ServiceNow instance.
 func ServiceNowProvider() *schema.Provider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
@@ -22,10 +23,10 @@ func ServiceNowProvider() *schema.Provider {
 			"password": {
 				Type:        schema.TypeString,
 				Description: "Password of the user to manage resources.",
-				Required: 	 true,
+				Required:    true,
 			},
 		},
-		ResourcesMap: map[string]*schema.Resource {
+		ResourcesMap: map[string]*schema.Resource{
 			"servicenow_ui_page": resources.ResourceUiPage(),
 		},
 		ConfigureFunc: configure,
@@ -34,11 +35,10 @@ func ServiceNowProvider() *schema.Provider {
 
 func configure(data *schema.ResourceData) (interface{}, error) {
 	// Create a new client to talk to the instance.
-	client := &client.ServiceNowClient{
-		BaseUrl: data.Get("instance_url").(string),
-		Username: data.Get("username").(string),
-		Password: data.Get("password").(string),
-	}
+	client := client.NewClient(
+		data.Get("instance_url").(string),
+		data.Get("username").(string),
+		data.Get("password").(string))
 
 	return client, nil
 }
