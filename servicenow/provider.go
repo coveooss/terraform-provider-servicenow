@@ -6,8 +6,8 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
-// Terraform Provider to that manages objects in a ServiceNow instance.
-func ServiceNowProvider() *schema.Provider {
+// Provider is a Terraform Provider to that manages objects in a ServiceNow instance.
+func Provider() *schema.Provider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
 			"instance_url": {
