@@ -26,3 +26,10 @@ A custom provider for Terraform to manage objects in a ServiceNow instance for d
 1. Clone repository to: `$GOPATH/src/github.com/terraform-providers/terraform-provider-servicenow`
 1. Build the executable using `go build -o terraform-provider-servicenow`
 1. Copy the file to `~.terraform.d/plugins`
+
+## Supported Resources
+
+- UI Page (servicenow_ui_page)
+- Widget (servicenow_widget)
+- Widget Dependency (servicenow_widget_dependency)
+- Widget Dependency Relation (servicenow_widget_dependency_relation)
