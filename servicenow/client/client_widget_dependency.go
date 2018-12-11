@@ -1,7 +1,6 @@
 package client
 
 import (
-	"encoding/json"
 	"fmt"
 )
 
@@ -16,51 +15,27 @@ type WidgetDependencyRelation struct {
 
 // WidgetDependencyRelationResults is the object returned by ServiceNow API when saving or retrieving records.
 type WidgetDependencyRelationResults struct {
-	Results []WidgetDependencyRelation `json:"records"`
+	Records []WidgetDependencyRelation `json:"records"`
 }
 
 // GetWidgetDependencyRelation retrieves a specific UI Page in ServiceNow with it's sys_id.
 func (client *ServiceNowClient) GetWidgetDependencyRelation(id string) (*WidgetDependencyRelation, error) {
-	jsonResponse, err := client.requestJSON("GET", endpointWidgetDependencyRelation+"?JSONv2&sysparm_query=sys_id="+id, nil)
-	if err != nil {
-		return nil, err
-	}
-
 	relationResults := WidgetDependencyRelationResults{}
-	if err := json.Unmarshal(jsonResponse, &relationResults); err != nil {
+	if err := client.getObject(endpointWidgetDependencyRelation, id, &relationResults); err != nil {
 		return nil, err
 	}
 
-	if len(relationResults.Results) <= 0 {
-		return nil, fmt.Errorf("No UI Page found using sys_id %s", id)
-	}
-
-	return &relationResults.Results[0], nil
+	return &relationResults.Records[0], nil
 }
 
 // CreateWidgetDependencyRelation creates a widget dependency relation in ServiceNow and returns the newly created relation.
 func (client *ServiceNowClient) CreateWidgetDependencyRelation(relation *WidgetDependencyRelation) (*WidgetDependencyRelation, error) {
-	jsonResponse, err := client.requestJSON("POST", endpointWidgetDependencyRelation+"?JSONv2&sysparm_action=insert", relation)
-	if err != nil {
-		return nil, err
-	}
-
 	relationResults := WidgetDependencyRelationResults{}
-	if err = json.Unmarshal(jsonResponse, &relationResults); err != nil {
+	if err := client.createObject(endpointWidgetDependencyRelation, relation, &relationResults); err != nil {
 		return nil, err
 	}
 
-	var createdRelation WidgetDependencyRelation
-	if len(relationResults.Results) <= 0 {
-		err = fmt.Errorf("nothing was inserted")
-	} else {
-		createdRelation := &relationResults.Results[0]
-		if createdRelation.Status != "success" {
-			err = fmt.Errorf("error during insert -> %s: %s", createdRelation.Error.Message, createdRelation.Error.Reason)
-		}
-	}
-
-	return &createdRelation, err
+	return &relationResults.Records[0], nil
 }
 
 // UpdateWidgetDependencyRelation updates a widget dependency relation in ServiceNow.
@@ -71,4 +46,15 @@ func (client *ServiceNowClient) UpdateWidgetDependencyRelation(relation *WidgetD
 // DeleteWidgetDependencyRelation deletes a widget dependency relation in ServiceNow with the corresponding sys_id.
 func (client *ServiceNowClient) DeleteWidgetDependencyRelation(id string) error {
 	return client.deleteObject(endpointWidgetDependencyRelation, id)
+}
+
+func (results WidgetDependencyRelationResults) validate() error {
+	if len(results.Records) <= 0 {
+		return fmt.Errorf("no records found")
+	} else if len(results.Records) > 1 {
+		return fmt.Errorf("more than one record received")
+	} else if results.Records[0].Status != "success" {
+		return fmt.Errorf("error from ServiceNow -> %s: %s", results.Records[0].Error.Message, results.Records[0].Error.Reason)
+	}
+	return nil
 }

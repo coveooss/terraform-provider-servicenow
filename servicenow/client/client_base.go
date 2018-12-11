@@ -15,10 +15,10 @@ type ServiceNowClient struct {
 	Auth    string
 }
 
-// ErrorDetail is the details of an error. Should be included in the json if status is not success.
-type ErrorDetail struct {
-	Reason  string `json:"reason"`
-	Message string `json:"message"`
+// RequestResults is the interface for request responses. Each resource should implement it's own
+// validate method that will be called by the base client.
+type RequestResults interface {
+	validate() error
 }
 
 // BaseResult is representing the default properties of all results.
@@ -26,6 +26,12 @@ type BaseResult struct {
 	Id     string       `json:"sys_id,omitempty"`
 	Status string       `json:"__status,omitempty"`
 	Error  *ErrorDetail `json:"__error,omitempty"`
+}
+
+// ErrorDetail is the details of an error. Should be included in the json if status is not success.
+type ErrorDetail struct {
+	Reason  string `json:"reason"`
+	Message string `json:"message"`
 }
 
 // NewClient is a factory method used to return a new ServiceNowClient.
@@ -74,48 +80,43 @@ func (client *ServiceNowClient) getResponse(request *http.Request) ([]byte, erro
 	return responseData, nil
 }
 
-// GetWidgetDependencyRelation retrieves a specific UI Page in ServiceNow with it's sys_id.
-func (client *ServiceNowClient) getObject(endpoint string, id string, object interface{}) (interface{}, error) {
-	jsonResponse, err := client.requestJSON("GET", endpoint + "?JSONv2&sysparm_query=sys_id=" + id, nil)
+// getObject retrieves an object via a specific endpoint with a GET method and a specified
+// sys_id. The response is parsed and fills the object in parameters. responseObjectOut
+// parameter must be a pointer.
+func (client *ServiceNowClient) getObject(endpoint string, id string, responseObjectOut RequestResults) error {
+	jsonResponse, err := client.requestJSON("GET", endpoint+"?JSONv2&sysparm_query=sys_id="+id, nil)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	relationResults := WidgetDependencyRelationResults{}
-	if err := json.Unmarshal(jsonResponse, &relationResults); err != nil {
-		return nil, err
+	if err := json.Unmarshal(jsonResponse, responseObjectOut); err != nil {
+		return err
 	}
 
-	if len(relationResults.Results) <= 0 {
-		return nil, fmt.Errorf("No UI Page found using sys_id %s", id)
+	if err := responseObjectOut.validate(); err != nil {
+		return err
 	}
 
-	return &relationResults.Results[0], nil
+	return nil
 }
 
-// CreateWidgetDependencyRelation creates a widget dependency relation in ServiceNow and returns the newly created relation.
-func (client *ServiceNowClient) createObject(endpoint string, object interface{}) (interface{}, error) {
-	jsonResponse, err := client.requestJSON("POST", endpoint + "?JSONv2&sysparm_action=insert", object)
+// createObject creates a new object in ServiceNow, validates the response and returns it.
+// responseObjectOut parameter must be a pointer.
+func (client *ServiceNowClient) createObject(endpoint string, objectToCreate interface{}, responseObjectOut RequestResults) error {
+	jsonResponse, err := client.requestJSON("POST", endpoint+"?JSONv2&sysparm_action=insert", objectToCreate)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	relationResults := RecordsResult{}
-	if err = json.Unmarshal(jsonResponse, &relationResults); err != nil {
-		return nil, err
+	if err := json.Unmarshal(jsonResponse, responseObjectOut); err != nil {
+		return err
 	}
 
-	var createdRelation WidgetDependencyRelation
-	if len(relationResults.Results) <= 0 {
-		err = fmt.Errorf("nothing was inserted")
-	} else {
-		createdRelation := &relationResults.Results[0]
-		if createdRelation.Status != "success" {
-			err = fmt.Errorf("error during insert -> %s: %s", createdRelation.Error.Message, createdRelation.Error.Reason)
-		}
+	if err := responseObjectOut.validate(); err != nil {
+		return err
 	}
 
-	return &createdRelation, err
+	return nil
 }
 
 // parseJson parses a JSON data string into a usable object.
@@ -125,12 +126,12 @@ func (client *ServiceNowClient) parseJson(data []byte, object interface{}) error
 
 // updateObject updates an object using a specific endpoint, sys_id and object data.
 func (client *ServiceNowClient) updateObject(endpoint string, id string, object interface{}) error {
-	_, err := client.requestJSON("POST", endpoint + "?JSONv2&sysparm_action=update&sysparm_query=sys_id=" + id, object)
+	_, err := client.requestJSON("POST", endpoint+"?JSONv2&sysparm_action=update&sysparm_query=sys_id="+id, object)
 	return err
 }
 
 // deleteObject deletes an object using a specific endpoing and sys_id.
 func (client *ServiceNowClient) deleteObject(endpoint string, id string) error {
-	_, err := client.requestJSON("POST", endpoint + "?JSONv2&sysparm_action=deleteRecord&sysparm_sys_id=" + id, nil)
+	_, err := client.requestJSON("POST", endpoint+"?JSONv2&sysparm_action=deleteRecord&sysparm_sys_id="+id, nil)
 	return err
 }

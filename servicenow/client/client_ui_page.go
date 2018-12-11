@@ -1,7 +1,6 @@
 package client
 
 import (
-	"encoding/json"
 	"fmt"
 )
 
@@ -21,52 +20,28 @@ type UiPage struct {
 
 // UiPageResults is the object returned by ServiceNow API when saving or retrieving records.
 type UiPageResults struct {
-	Results []UiPage `json:"records"`
+	Records []UiPage `json:"records"`
 }
 
 // GetUiPage retrieves a specific UI Page in ServiceNow with it's sys_id.
 func (client *ServiceNowClient) GetUiPage(id string) (*UiPage, error) {
-	jsonResponse, err := client.requestJSON("GET", endpointUiPage + "?JSONv2&sysparm_query=sys_id="+id, nil)
-	if err != nil {
-		return nil, err
-	}
-
 	uiPageResults := UiPageResults{}
-	if err := json.Unmarshal(jsonResponse, &uiPageResults); err != nil {
+	if err := client.getObject(endpointUiPage, id, &uiPageResults); err != nil {
 		return nil, err
 	}
 
-	if len(uiPageResults.Results) <= 0 {
-		return nil, fmt.Errorf("No UI Page found using sys_id %s", id)
-	}
-
-	return &uiPageResults.Results[0], nil
+	return &uiPageResults.Records[0], nil
 }
 
 // CreateUiPage creates a new UI Page in ServiceNow and returns the newly created page. The new page should
 // include the GUID (sys_id) created in ServiceNow.
 func (client *ServiceNowClient) CreateUiPage(uiPage *UiPage) (*UiPage, error) {
-	jsonResponse, err := client.requestJSON("POST", endpointUiPage + "?JSONv2&sysparm_action=insert", uiPage)
-	if err != nil {
-		return nil, err
-	}
-
 	uiPageResults := UiPageResults{}
-	if err = json.Unmarshal(jsonResponse, &uiPageResults); err != nil {
+	if err := client.createObject(endpointUiPage, uiPage, &uiPageResults); err != nil {
 		return nil, err
 	}
 
-	var page UiPage
-	if len(uiPageResults.Results) <= 0 {
-		err = fmt.Errorf("no UI Page were inserted")
-	} else {
-		page := &uiPageResults.Results[0]
-		if page.Status != "success" {
-			err = fmt.Errorf("error during insert -> %s: %s", page.Error.Message, page.Error.Reason)
-		}
-	}
-
-	return &page, err
+	return &uiPageResults.Records[0], nil
 }
 
 // UpdateUiPage updates a UI Page in ServiceNow.
@@ -77,4 +52,15 @@ func (client *ServiceNowClient) UpdateUiPage(uiPage *UiPage) error {
 // DeleteUiPage deletes a UI Page in ServiceNow with the corresponding sys_id.
 func (client *ServiceNowClient) DeleteUiPage(id string) error {
 	return client.deleteObject(endpointUiPage, id)
+}
+
+func (results UiPageResults) validate() error {
+	if len(results.Records) <= 0 {
+		return fmt.Errorf("no records found")
+	} else if len(results.Records) > 1 {
+		return fmt.Errorf("more than one record received")
+	} else if results.Records[0].Status != "success" {
+		return fmt.Errorf("error from ServiceNow -> %s: %s", results.Records[0].Error.Message, results.Records[0].Error.Reason)
+	}
+	return nil
 }

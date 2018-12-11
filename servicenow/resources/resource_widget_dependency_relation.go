@@ -5,23 +5,23 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
-const dependencyId = "dependency_id"
-const widgetId = "widget_id"
+const widgetDepRelationDependencyId = "dependency_id"
+const widgetDepRelationWidgetId = "widget_id"
 
 // ResourceWidgetDependencyRelation is holding the relationship between a widget and a widget dependency (many-2-many).
 func ResourceWidgetDependencyRelation() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceServerCreate,
-		Read:   resourceServerRead,
-		Update: resourceServerUpdate,
-		Delete: resourceServerDelete,
+		Create: createResourceWidgetDepRelation,
+		Read:   readResourceWidgetDepRelation,
+		Update: updateResourceWidgetDepRelation,
+		Delete: deleteResourceWidgetDepRelation,
 
 		Schema: map[string]*schema.Schema{
-			dependencyId: {
+			widgetDepRelationDependencyId: {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			widgetId: {
+			widgetDepRelationWidgetId: {
 				Type:     schema.TypeString,
 				Required: true,
 			},
@@ -29,7 +29,7 @@ func ResourceWidgetDependencyRelation() *schema.Resource {
 	}
 }
 
-func resourceServerRead(data *schema.ResourceData, serviceNowClient interface{}) error {
+func readResourceWidgetDepRelation(data *schema.ResourceData, serviceNowClient interface{}) error {
 	client := serviceNowClient.(*client.ServiceNowClient)
 	relation, err := client.GetWidgetDependencyRelation(data.Id())
 	if err != nil {
@@ -37,47 +37,49 @@ func resourceServerRead(data *schema.ResourceData, serviceNowClient interface{})
 		return err
 	}
 
-	updateResourceData(data, relation)
+	resourceFromWidgetDepRelation(data, relation)
+
 	return nil
 }
 
-func resourceServerCreate(data *schema.ResourceData, serviceNowClient interface{}) error {
+func createResourceWidgetDepRelation(data *schema.ResourceData, serviceNowClient interface{}) error {
 	client := serviceNowClient.(*client.ServiceNowClient)
-	createdPage, err := client.CreateWidgetDependencyRelation(resourceToRelation(data))
+	createdPage, err := client.CreateWidgetDependencyRelation(resourceToWidgetDepRelation(data))
 	if err != nil {
 		return err
 	}
 
-	updateResourceData(data, createdPage)
+	resourceFromWidgetDepRelation(data, createdPage)
 
-	return resourceServerRead(data, serviceNowClient)
+	return readResourceWidgetDepRelation(data, serviceNowClient)
 }
 
-func resourceServerUpdate(data *schema.ResourceData, serviceNowClient interface{}) error {
+func updateResourceWidgetDepRelation(data *schema.ResourceData, serviceNowClient interface{}) error {
 	client := serviceNowClient.(*client.ServiceNowClient)
-	err := client.UpdateWidgetDependencyRelation(resourceToRelation(data))
+	err := client.UpdateWidgetDependencyRelation(resourceToWidgetDepRelation(data))
 	if err != nil {
 		return err
 	}
 
-	return resourceServerRead(data, serviceNowClient)
+	return readResourceWidgetDepRelation(data, serviceNowClient)
 }
 
-func resourceServerDelete(data *schema.ResourceData, serviceNowClient interface{}) error {
+func deleteResourceWidgetDepRelation(data *schema.ResourceData, serviceNowClient interface{}) error {
 	client := serviceNowClient.(*client.ServiceNowClient)
 	return client.DeleteWidgetDependencyRelation(data.Id())
 }
 
-func updateResourceData(data *schema.ResourceData, relation *client.WidgetDependencyRelation) {
+func resourceFromWidgetDepRelation(data *schema.ResourceData, relation *client.WidgetDependencyRelation) {
 	data.SetId(relation.Id)
-	data.Set(dependencyId, relation.DependencyId)
-	data.Set(widgetId, relation.WidgetId)
+	data.Set(widgetDepRelationDependencyId, relation.DependencyId)
+	data.Set(widgetDepRelationWidgetId, relation.WidgetId)
 }
 
-func resourceToRelation(data *schema.ResourceData) *client.WidgetDependencyRelation {
-	return &client.WidgetDependencyRelation{
-		Id:           data.Id(),
-		DependencyId: data.Get(dependencyId).(string),
-		WidgetId:     data.Get(widgetId).(string),
+func resourceToWidgetDepRelation(data *schema.ResourceData) *client.WidgetDependencyRelation {
+	relation := client.WidgetDependencyRelation{
+		DependencyId: data.Get(widgetDepRelationDependencyId).(string),
+		WidgetId:     data.Get(widgetDepRelationWidgetId).(string),
 	}
+	relation.Id = data.Id()
+	return &relation
 }
