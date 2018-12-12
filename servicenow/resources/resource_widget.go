@@ -171,7 +171,7 @@ func resourceToWidget(data *schema.ResourceData) *client.Widget {
 		Name:         data.Get(widgetName).(string),
 		Template:     data.Get(widgetTemplate).(string),
 		Css:          data.Get(widgetCss).(string),
-		widgetPublic: data.Get(Public).(bool),
+		Public:       data.Get(widgetPublic).(bool),
 		Roles:        data.Get(widgetId).(string),
 		Link:         data.Get(widgetLink).(string),
 		Description:  data.Get(widgetDescription).(string),
