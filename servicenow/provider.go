@@ -27,7 +27,13 @@ func Provider() *schema.Provider {
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
-			"servicenow_ui_page": resources.ResourceUiPage(),
+			"servicenow_ui_page":                    resources.ResourceUiPage(),
+			"servicenow_widget_dependency":          resources.ResourceWidgetDependency(),
+			"servicenow_widget_dependency_relation": resources.ResourceWidgetDependencyRelation(),
+			"servicenow_js_include":                 resources.ResourceJsInclude(),
+			"servicenow_js_include_relation":        resources.ResourceJsIncludeRelation(),
+			"servicenow_css_include":                resources.ResourceJsInclude(),
+			"servicenow_css_include_relation":       resources.ResourceJsIncludeRelation(),
 		},
 		ConfigureFunc: configure,
 	}
