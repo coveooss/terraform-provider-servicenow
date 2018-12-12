@@ -28,6 +28,7 @@ func Provider() *schema.Provider {
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"servicenow_ui_page":                    resources.ResourceUiPage(),
+			"servicenow_widget":                     resources.ResourceWidget(),
 			"servicenow_widget_dependency":          resources.ResourceWidgetDependency(),
 			"servicenow_widget_dependency_relation": resources.ResourceWidgetDependencyRelation(),
 			"servicenow_js_include":                 resources.ResourceJsInclude(),
