@@ -5,51 +5,51 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
-const name = "name"
-const description = "description"
-const category = "category"
-const direct = "direct"
-const clientScript = "client_script"
-const processingScript = "processing_script"
-const html = "html"
+const uiPageName = "name"
+const uiPageDescription = "description"
+const uiPageCategory = "category"
+const uiPageDirect = "direct"
+const uiPageClientScript = "client_script"
+const uiPageProcessingScript = "processing_script"
+const uiPageHtml = "html"
 
 // Resource to manage a UI Page in ServiceNow.
 func ResourceUiPage() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceServerCreate,
-		Read:   resourceServerRead,
-		Update: resourceServerUpdate,
-		Delete: resourceServerDelete,
+		Create: createResourceUiPage,
+		Read:   readResourceUiPage,
+		Update: updateResourceUiPage,
+		Delete: deleteResourceUiPage,
 
 		Schema: map[string]*schema.Schema{
-			name: {
+			uiPageName: {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			description: {
+			uiPageDescription: {
 				Type:     schema.TypeString,
 				Optional: true,
 				Default:  "",
 			},
-			category: {
+			uiPageCategory: {
 				Type:     schema.TypeString,
 				Optional: true,
 				Default:  "general",
 			},
-			direct: {
+			uiPageDirect: {
 				Type:     schema.TypeBool,
 				Optional: true,
 				Default:  false,
 			},
-			clientScript: {
+			uiPageClientScript: {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			processingScript: {
+			uiPageProcessingScript: {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			html: {
+			uiPageHtml: {
 				Type:     schema.TypeString,
 				Required: true,
 			},
@@ -57,7 +57,7 @@ func ResourceUiPage() *schema.Resource {
 	}
 }
 
-func resourceServerRead(data *schema.ResourceData, serviceNowClient interface{}) error {
+func readResourceUiPage(data *schema.ResourceData, serviceNowClient interface{}) error {
 	client := serviceNowClient.(*client.ServiceNowClient)
 	uiPage, err := client.GetUiPage(data.Id())
 	if err != nil {
@@ -65,57 +65,59 @@ func resourceServerRead(data *schema.ResourceData, serviceNowClient interface{})
 		return err
 	}
 
-	updateResourceData(data, uiPage)
+	resourceFromUiPage(data, uiPage)
+
 	return nil
 }
 
-func resourceServerCreate(data *schema.ResourceData, serviceNowClient interface{}) error {
+func createResourceUiPage(data *schema.ResourceData, serviceNowClient interface{}) error {
 	client := serviceNowClient.(*client.ServiceNowClient)
 	createdPage, err := client.CreateUiPage(resourceToUiPage(data))
 	if err != nil {
 		return err
 	}
 
-	updateResourceData(data, createdPage)
+	resourceFromUiPage(data, createdPage)
 
-	return resourceServerRead(data, serviceNowClient)
+	return readResourceUiPage(data, serviceNowClient)
 }
 
-func resourceServerUpdate(data *schema.ResourceData, serviceNowClient interface{}) error {
+func updateResourceUiPage(data *schema.ResourceData, serviceNowClient interface{}) error {
 	client := serviceNowClient.(*client.ServiceNowClient)
 	err := client.UpdateUiPage(resourceToUiPage(data))
 	if err != nil {
 		return err
 	}
 
-	return resourceServerRead(data, serviceNowClient)
+	return readResourceUiPage(data, serviceNowClient)
 }
 
-func resourceServerDelete(data *schema.ResourceData, serviceNowClient interface{}) error {
+func deleteResourceUiPage(data *schema.ResourceData, serviceNowClient interface{}) error {
 	client := serviceNowClient.(*client.ServiceNowClient)
 	return client.DeleteUiPage(data.Id())
 }
 
-func updateResourceData(data *schema.ResourceData, page *client.UiPage) {
+func resourceFromUiPage(data *schema.ResourceData, page *client.UiPage) {
 	data.SetId(page.Id)
-	data.Set(name, page.Name)
-	data.Set(description, page.Description)
-	data.Set(direct, page.Direct)
-	data.Set(html, page.Html)
-	data.Set(processingScript, page.ProcessingScript)
-	data.Set(clientScript, page.ClientScript)
-	data.Set(category, page.Category)
+	data.Set(uiPageName, page.Name)
+	data.Set(uiPageDescription, page.Description)
+	data.Set(uiPageDirect, page.Direct)
+	data.Set(uiPageHtml, page.Html)
+	data.Set(uiPageProcessingScript, page.ProcessingScript)
+	data.Set(uiPageClientScript, page.ClientScript)
+	data.Set(uiPageCategory, page.Category)
 }
 
 func resourceToUiPage(data *schema.ResourceData) *client.UiPage {
-	return &client.UiPage{
-		Id:               data.Id(),
-		Name:             data.Get(name).(string),
-		Description:      data.Get(description).(string),
-		Direct:           data.Get(direct).(bool),
-		Html:             data.Get(html).(string),
-		ProcessingScript: data.Get(processingScript).(string),
-		ClientScript:     data.Get(clientScript).(string),
-		Category:         data.Get(category).(string),
+	uiPage := client.UiPage{
+		Name:             data.Get(uiPageName).(string),
+		Description:      data.Get(uiPageDescription).(string),
+		Direct:           data.Get(uiPageDirect).(bool),
+		Html:             data.Get(uiPageHtml).(string),
+		ProcessingScript: data.Get(uiPageProcessingScript).(string),
+		ClientScript:     data.Get(uiPageClientScript).(string),
+		Category:         data.Get(uiPageCategory).(string),
 	}
+	uiPage.Id = data.Id()
+	return &uiPage
 }
