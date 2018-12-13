@@ -1,6 +1,6 @@
 # Terraform ServiceNow Provider
 
-A custom provider for Terraform to manage objects in a ServiceNow instance for developping system applications outside of an instance.
+A custom provider for Terraform to manage objects in a ServiceNow instance for developping system applications outside of an instance. This is especially useful when you want to create an Application with proper source control and continuous development integration.
 
 [![Terraform Logo](https://www.terraform.io/assets/images/og-image-f5bbc98c.png)](https://www.terraform.io/)
 [![ServiceNow Logo](https://community.servicenow.com/c4fe846adbb95f0037015e77dc961918.iix)](https://www.servicenow.com/)
@@ -29,7 +29,4 @@ A custom provider for Terraform to manage objects in a ServiceNow instance for d
 
 ## Supported Resources
 
-- UI Page (servicenow_ui_page)
-- Widget (servicenow_widget)
-- Widget Dependency (servicenow_widget_dependency)
-- Widget Dependency Relation (servicenow_widget_dependency_relation)
+Check out the [Wiki](https://github.com/coveo/terraform-provider-servicenow/wiki)!

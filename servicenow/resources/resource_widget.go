@@ -5,7 +5,7 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
-const widgetId = "id"
+const widgetId = "identifier"
 const widgetName = "name"
 const widgetTemplate = "template"
 const widgetCss = "css"
