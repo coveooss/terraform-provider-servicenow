@@ -16,6 +16,7 @@ type UiPage struct {
 	ProcessingScript string `json:"processing_script"`
 	ClientScript     string `json:"client_script"`
 	Category         string `json:"category"`
+	Endpoint         string `json:"endpoint,omitempty"`
 }
 
 // UiPageResults is the object returned by ServiceNow API when saving or retrieving records.

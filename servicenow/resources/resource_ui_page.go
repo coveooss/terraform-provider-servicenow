@@ -12,8 +12,9 @@ const uiPageDirect = "direct"
 const uiPageClientScript = "client_script"
 const uiPageProcessingScript = "processing_script"
 const uiPageHtml = "html"
+const uiPageEndpoint = "endpoint"
 
-// Resource to manage a UI Page in ServiceNow.
+// ResourceUiPage manages a UI Page in ServiceNow.
 func ResourceUiPage() *schema.Resource {
 	return &schema.Resource{
 		Create: createResourceUiPage,
@@ -52,6 +53,10 @@ func ResourceUiPage() *schema.Resource {
 			uiPageHtml: {
 				Type:     schema.TypeString,
 				Required: true,
+			},
+			uiPageEndpoint: {
+				Type:     schema.TypeString,
+				Computed: true,
 			},
 		},
 	}
@@ -106,6 +111,7 @@ func resourceFromUiPage(data *schema.ResourceData, page *client.UiPage) {
 	data.Set(uiPageProcessingScript, page.ProcessingScript)
 	data.Set(uiPageClientScript, page.ClientScript)
 	data.Set(uiPageCategory, page.Category)
+	data.Set(uiPageEndpoint, page.Endpoint)
 }
 
 func resourceToUiPage(data *schema.ResourceData) *client.UiPage {
