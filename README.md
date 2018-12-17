@@ -27,6 +27,10 @@ A custom provider for Terraform to manage objects in a ServiceNow instance for d
 1. Build the executable using `go build -o terraform-provider-servicenow`
 1. Copy the file to `~.terraform.d/plugins`
 
+### Other
+
+You can also download the [latest release](/releases/latest) binaries and place them in your working directory, since Terraform will look for providers in the working directory also.
+
 ## Supported Resources
 
-Check out the [Wiki](https://github.com/coveo/terraform-provider-servicenow/wiki)!
+Check out the [Wiki](https://github.com/coveo/terraform-provider-servicenow/wiki) !
