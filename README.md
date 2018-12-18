@@ -7,7 +7,7 @@ A custom provider for Terraform to manage objects in a ServiceNow instance for d
 
 [![Travis Report](https://travis-ci.org/coveo/terraform-provider-servicenow.svg?branch=master)](https://travis-ci.org/coveo/terraform-provider-servicenow)
 [![Go Report Card](https://goreportcard.com/badge/github.com/coveo/terraform-provider-servicenow)](https://goreportcard.com/report/github.com/coveo/terraform-provider-servicenow)
-[![Release Badge](https://img.shields.io/github/release/coveo/terraform-provider-servicenow.svg)](releases/latest)
+[![Release Badge](https://img.shields.io/github/release/coveo/terraform-provider-servicenow.svg)](https://github.com/coveo/terraform-provider-servicenow/releases/latest)
 [![License Badge](https://img.shields.io/github/license/coveo/terraform-provider-servicenow.svg)](LICENSE)
 
 ## Requirements
