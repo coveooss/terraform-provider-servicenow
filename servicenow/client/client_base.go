@@ -93,11 +93,7 @@ func (client *ServiceNowClient) getObject(endpoint string, id string, responseOb
 		return err
 	}
 
-	if err := responseObjectOut.validate(); err != nil {
-		return err
-	}
-
-	return nil
+	return responseObjectOut.validate()
 }
 
 // createObject creates a new object in ServiceNow, validates the response and returns it.
@@ -112,16 +108,7 @@ func (client *ServiceNowClient) createObject(endpoint string, objectToCreate int
 		return err
 	}
 
-	if err := responseObjectOut.validate(); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// parseJson parses a JSON data string into a usable object.
-func (client *ServiceNowClient) parseJson(data []byte, object interface{}) error {
-	return json.Unmarshal(data, object)
+	return responseObjectOut.validate()
 }
 
 // updateObject updates an object using a specific endpoint, sys_id and object data.

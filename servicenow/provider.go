@@ -35,6 +35,10 @@ func Provider() *schema.Provider {
 			"servicenow_js_include_relation":        resources.ResourceJsIncludeRelation(),
 			"servicenow_css_include":                resources.ResourceJsInclude(),
 			"servicenow_css_include_relation":       resources.ResourceJsIncludeRelation(),
+			"servicenow_role":                       resources.ResourceRole(),
+		},
+		DataSourcesMap: map[string]*schema.Resource{
+			"servicenow_role": resources.DataSourceRole(),
 		},
 		ConfigureFunc: configure,
 	}
