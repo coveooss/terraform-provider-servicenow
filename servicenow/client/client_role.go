@@ -53,9 +53,9 @@ func (client *ServiceNowClient) GetRoleByName(name string) (*Role, error) {
 
 // CreateRole creates a new Role in ServiceNow and returns the newly created role. The new role should
 // include the GUID (sys_id) created in ServiceNow.
-func (client *ServiceNowClient) CreateRole(uiPage *Role) (*Role, error) {
+func (client *ServiceNowClient) CreateRole(role *Role) (*Role, error) {
 	rolePageResults := RoleResults{}
-	if err := client.createObject(endpointRole, uiPage, &rolePageResults); err != nil {
+	if err := client.createObject(endpointRole, role, &rolePageResults); err != nil {
 		return nil, err
 	}
 
@@ -63,8 +63,8 @@ func (client *ServiceNowClient) CreateRole(uiPage *Role) (*Role, error) {
 }
 
 // UpdateRole updates a Role in ServiceNow.
-func (client *ServiceNowClient) UpdateRole(uiPage *Role) error {
-	return client.updateObject(endpointRole, uiPage.Id, uiPage)
+func (client *ServiceNowClient) UpdateRole(role *Role) error {
+	return client.updateObject(endpointRole, role.Id, role)
 }
 
 // DeleteRole deletes a Role in ServiceNow with the corresponding sys_id.
