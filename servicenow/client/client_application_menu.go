@@ -1,7 +1,6 @@
 package client
 
 import (
-	"encoding/json"
 	"fmt"
 )
 
@@ -29,25 +28,6 @@ type ApplicationMenuResults struct {
 func (client *ServiceNowClient) GetApplicationMenu(id string) (*ApplicationMenu, error) {
 	applicationMenuPageResults := ApplicationMenuResults{}
 	if err := client.getObject(endpointApplicationMenu, id, &applicationMenuPageResults); err != nil {
-		return nil, err
-	}
-
-	return &applicationMenuPageResults.Records[0], nil
-}
-
-// GetApplicationMenuByName retrieves a specific ApplicationMenu in ServiceNow with it's name attribute.
-func (client *ServiceNowClient) GetApplicationMenuByName(name string) (*ApplicationMenu, error) {
-	jsonResponse, err := client.requestJSON("GET", endpointApplicationMenu+"?JSONv2&sysparm_query=name="+name, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	applicationMenuPageResults := ApplicationMenuResults{}
-	if err := json.Unmarshal(jsonResponse, &applicationMenuPageResults); err != nil {
-		return nil, err
-	}
-
-	if err := applicationMenuPageResults.validate(); err != nil {
 		return nil, err
 	}
 

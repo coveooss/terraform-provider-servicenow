@@ -65,7 +65,7 @@ func ResourceApplicationMenu() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Default:     "",
-				Description: "Comma-separated list of Roles that can view this application.",
+				Description: "Comma-separated list of Roles (names) that can view this application.",
 			},
 			applicationMenuCategory: {
 				Type:        schema.TypeString,
