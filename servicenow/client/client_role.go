@@ -7,7 +7,7 @@ import (
 
 const endpointRole = "sys_user_role.do"
 
-// Role is the json response for a UI role in ServiceNow.
+// Role is the json response for a role in ServiceNow.
 type Role struct {
 	BaseResult
 	Name              string `json:"name"`
