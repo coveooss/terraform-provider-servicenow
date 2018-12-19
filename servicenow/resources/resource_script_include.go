@@ -23,6 +23,10 @@ func ResourceScriptInclude() *schema.Resource {
 		Update: updateResourceScriptInclude,
 		Delete: deleteResourceScriptInclude,
 
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
 		Schema: map[string]*schema.Schema{
 			scriptIncludeName: {
 				Type:        schema.TypeString,

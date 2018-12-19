@@ -17,6 +17,10 @@ func ResourceJsIncludeRelation() *schema.Resource {
 		Update: updateResourceJsIncludeRelation,
 		Delete: deleteResourceJsIncludeRelation,
 
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
 		Schema: map[string]*schema.Schema{
 			jsIncludeRelationDependencyId: {
 				Type:     schema.TypeString,

@@ -17,6 +17,10 @@ func ResourceWidgetDependency() *schema.Resource {
 		Update: updateResourceWidgetDependency,
 		Delete: deleteResourceWidgetDependency,
 
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
 		Schema: map[string]*schema.Schema{
 			widgetDependencyName: {
 				Type:     schema.TypeString,

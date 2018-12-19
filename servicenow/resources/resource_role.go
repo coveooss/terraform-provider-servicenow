@@ -19,6 +19,10 @@ func ResourceRole() *schema.Resource {
 		Update: updateResourceRole,
 		Delete: deleteResourceRole,
 
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
 		Schema: map[string]*schema.Schema{
 			roleSuffix: {
 				Type:     schema.TypeString,

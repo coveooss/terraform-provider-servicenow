@@ -27,6 +27,10 @@ func ResourceApplicationModule() *schema.Resource {
 		Update: updateResourceApplicationModule,
 		Delete: deleteResourceApplicationModule,
 
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
 		Schema: map[string]*schema.Schema{
 			applicationModuleTitle: {
 				Type:        schema.TypeString,

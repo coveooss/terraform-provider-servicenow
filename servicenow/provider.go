@@ -28,6 +28,7 @@ func Provider() *schema.Provider {
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
+			"servicenow_application":                resources.ResourceApplication(),
 			"servicenow_application_menu":           resources.ResourceApplicationMenu(),
 			"servicenow_application_module":         resources.ResourceApplicationModule(),
 			"servicenow_css_include":                resources.ResourceJsInclude(),
@@ -42,7 +43,8 @@ func Provider() *schema.Provider {
 			"servicenow_widget_dependency_relation": resources.ResourceWidgetDependencyRelation(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
-			"servicenow_role": resources.DataSourceRole(),
+			"servicenow_application": resources.DataSourceApplication(),
+			"servicenow_role":        resources.DataSourceRole(),
 		},
 		ConfigureFunc: configure,
 	}

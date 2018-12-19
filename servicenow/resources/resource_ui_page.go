@@ -22,6 +22,10 @@ func ResourceUiPage() *schema.Resource {
 		Update: updateResourceUiPage,
 		Delete: deleteResourceUiPage,
 
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
 		Schema: map[string]*schema.Schema{
 			uiPageName: {
 				Type:     schema.TypeString,

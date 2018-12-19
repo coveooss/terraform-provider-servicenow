@@ -2,6 +2,7 @@ package resources
 
 import (
 	"fmt"
+
 	"github.com/coveo/terraform-provider-servicenow/servicenow/client"
 	"github.com/hashicorp/terraform/helper/schema"
 )
@@ -18,6 +19,10 @@ func ResourceCssInclude() *schema.Resource {
 		Read:   readResourceCssInclude,
 		Update: updateResourceCssInclude,
 		Delete: deleteResourceCssInclude,
+
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
 
 		Schema: map[string]*schema.Schema{
 			cssIncludeSource: {

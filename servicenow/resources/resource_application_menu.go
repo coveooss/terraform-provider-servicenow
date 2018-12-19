@@ -24,6 +24,10 @@ func ResourceApplicationMenu() *schema.Resource {
 		Update: updateResourceApplicationMenu,
 		Delete: deleteResourceApplicationMenu,
 
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
 		Schema: map[string]*schema.Schema{
 			applicationMenuTitle: {
 				Type:        schema.TypeString,

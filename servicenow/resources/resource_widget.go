@@ -29,6 +29,10 @@ func ResourceWidget() *schema.Resource {
 		Update: updateResourceWidget,
 		Delete: deleteResourceWidget,
 
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
 		Schema: map[string]*schema.Schema{
 			widgetId: {
 				Type:     schema.TypeString,

@@ -17,6 +17,10 @@ func ResourceCssIncludeRelation() *schema.Resource {
 		Update: updateResourceCssIncludeRelation,
 		Delete: deleteResourceCssIncludeRelation,
 
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
 		Schema: map[string]*schema.Schema{
 			cssIncludeRelationDependencyId: {
 				Type:     schema.TypeString,
