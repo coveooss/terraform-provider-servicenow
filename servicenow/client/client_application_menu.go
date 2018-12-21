@@ -9,7 +9,7 @@ const endpointApplicationMenu = "sys_app_application.do"
 // ApplicationMenu is the json response for an application menu in ServiceNow.
 type ApplicationMenu struct {
 	BaseResult
-	Title       string `json:"name"`
+	Title       string `json:"title"`
 	Description string `json:"description"`
 	Hint        string `json:"hint"`
 	DeviceType  string `json:"device_type"`

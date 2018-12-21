@@ -52,7 +52,7 @@ func ResourceWidget() *schema.Resource {
 				Default:  "",
 			},
 			widgetPublic: {
-				Type:     schema.TypeString,
+				Type:     schema.TypeBool,
 				Optional: true,
 				Default:  false,
 			},
@@ -92,7 +92,7 @@ func ResourceWidget() *schema.Resource {
 				Default:  "",
 			},
 			widgetHasPreview: {
-				Type:     schema.TypeString,
+				Type:     schema.TypeBool,
 				Optional: true,
 				Default:  false,
 			},
