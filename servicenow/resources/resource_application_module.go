@@ -1,8 +1,6 @@
 package resources
 
 import (
-	"fmt"
-
 	"github.com/coveo/terraform-provider-servicenow/servicenow/client"
 	"github.com/hashicorp/terraform/helper/schema"
 )
@@ -77,10 +75,7 @@ func ResourceApplicationModule() *schema.Resource {
 				Required:    true,
 				Description: "Type of device where this menu will appear. Can be 'DIRECT' for a UI page link or 'LIST' for a table link.",
 				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
-					v := val.(string)
-					if v != "DIRECT" && v != "LIST" {
-						errs = append(errs, fmt.Errorf("%q must be 'DIRECT' or 'LIST', got: %s", key, v))
-					}
+					warns, errs = validateStringValue(val.(string), key, []string{"DIRECT", "LIST"})
 					return
 				},
 			},
@@ -101,6 +96,7 @@ func ResourceApplicationModule() *schema.Resource {
 				Default:     "",
 				Description: "The full name of the table where this module will redirect when the link type is 'LIST'.",
 			},
+			commonProtectionPolicy: getProtectionPolicySchema(),
 		},
 	}
 }
@@ -158,6 +154,7 @@ func resourceFromApplicationModule(data *schema.ResourceData, applicationModule 
 	data.Set(applicationModuleLinkArguments, applicationModule.Arguments)
 	data.Set(applicationModuleWindowName, applicationModule.WindowName)
 	data.Set(applicationModuleTableName, applicationModule.TableName)
+	data.Set(commonProtectionPolicy, applicationModule.ProtectionPolicy)
 }
 
 func resourceToApplicationModule(data *schema.ResourceData) *client.ApplicationModule {
@@ -175,5 +172,6 @@ func resourceToApplicationModule(data *schema.ResourceData) *client.ApplicationM
 		TableName:         data.Get(applicationModuleTableName).(string),
 	}
 	applicationModule.Id = data.Id()
+	applicationModule.ProtectionPolicy = data.Get(commonProtectionPolicy).(string)
 	return &applicationModule
 }

@@ -106,6 +106,7 @@ func ResourceWidget() *schema.Resource {
 				Optional: true,
 				Default:  "c",
 			},
+			commonProtectionPolicy: getProtectionPolicySchema(),
 		},
 	}
 }
@@ -150,23 +151,24 @@ func deleteResourceWidget(data *schema.ResourceData, serviceNowClient interface{
 	return client.DeleteWidget(data.Id())
 }
 
-func resourceFromWidget(data *schema.ResourceData, page *client.Widget) {
-	data.SetId(page.Id)
-	data.Set(widgetId, page.CustomId)
-	data.Set(widgetName, page.Name)
-	data.Set(widgetTemplate, page.Template)
-	data.Set(widgetCss, page.Css)
-	data.Set(widgetPublic, page.Public)
-	data.Set(widgetRoles, page.Roles)
-	data.Set(widgetLink, page.Link)
-	data.Set(widgetDescription, page.Description)
-	data.Set(widgetClientScript, page.ClientScript)
-	data.Set(widgetServerScript, page.ServerScript)
-	data.Set(widgetDemoData, page.DemoData)
-	data.Set(widgetOptionSchema, page.OptionSchema)
-	data.Set(widgetHasPreview, page.HasPreview)
-	data.Set(widgetDataTable, page.DataTable)
-	data.Set(widgetControllerAs, page.ControllerAs)
+func resourceFromWidget(data *schema.ResourceData, widget *client.Widget) {
+	data.SetId(widget.Id)
+	data.Set(widgetId, widget.CustomId)
+	data.Set(widgetName, widget.Name)
+	data.Set(widgetTemplate, widget.Template)
+	data.Set(widgetCss, widget.Css)
+	data.Set(widgetPublic, widget.Public)
+	data.Set(widgetRoles, widget.Roles)
+	data.Set(widgetLink, widget.Link)
+	data.Set(widgetDescription, widget.Description)
+	data.Set(widgetClientScript, widget.ClientScript)
+	data.Set(widgetServerScript, widget.ServerScript)
+	data.Set(widgetDemoData, widget.DemoData)
+	data.Set(widgetOptionSchema, widget.OptionSchema)
+	data.Set(widgetHasPreview, widget.HasPreview)
+	data.Set(widgetDataTable, widget.DataTable)
+	data.Set(widgetControllerAs, widget.ControllerAs)
+	data.Set(commonProtectionPolicy, widget.ProtectionPolicy)
 }
 
 func resourceToWidget(data *schema.ResourceData) *client.Widget {
@@ -188,5 +190,6 @@ func resourceToWidget(data *schema.ResourceData) *client.Widget {
 		ControllerAs: data.Get(widgetControllerAs).(string),
 	}
 	widget.Id = data.Id()
+	widget.ProtectionPolicy = data.Get(commonProtectionPolicy).(string)
 	return &widget
 }
