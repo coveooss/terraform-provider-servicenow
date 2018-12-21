@@ -23,9 +23,10 @@ type RequestResults interface {
 
 // BaseResult is representing the default properties of all results.
 type BaseResult struct {
-	Id     string       `json:"sys_id,omitempty"`
-	Status string       `json:"__status,omitempty"`
-	Error  *ErrorDetail `json:"__error,omitempty"`
+	Id               string       `json:"sys_id,omitempty"`
+	ProtectionPolicy string       `json:"sys_policy,omitempty"`
+	Status           string       `json:"__status,omitempty"`
+	Error            *ErrorDetail `json:"__error,omitempty"`
 }
 
 // ErrorDetail is the details of an error. Should be included in the json if status is not success.

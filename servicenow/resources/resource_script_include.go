@@ -1,8 +1,6 @@
 package resources
 
 import (
-	"fmt"
-
 	"github.com/coveo/terraform-provider-servicenow/servicenow/client"
 	"github.com/hashicorp/terraform/helper/schema"
 )
@@ -62,10 +60,7 @@ func ResourceScriptInclude() *schema.Resource {
 				Default:     "package_private",
 				Description: "Whether this Script can be accessed from only this application scope or all application scopes. Values can be 'package_private' or 'public'.",
 				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
-					v := val.(string)
-					if v != "package_private" && v != "public" {
-						errs = append(errs, fmt.Errorf("%q must be 'package_private' or 'public', got: %s", key, v))
-					}
+					warns, errs = validateStringValue(val.(string), key, []string{"package_private", "public"})
 					return
 				},
 			},
@@ -74,6 +69,7 @@ func ResourceScriptInclude() *schema.Resource {
 				Computed:    true,
 				Description: "Full name of the Script Include needed to call it.",
 			},
+			commonProtectionPolicy: getProtectionPolicySchema(),
 		},
 	}
 }
@@ -127,6 +123,7 @@ func resourceFromScriptInclude(data *schema.ResourceData, scriptInclude *client.
 	data.Set(scriptIncludeActive, scriptInclude.Active)
 	data.Set(scriptIncludeAccess, scriptInclude.Access)
 	data.Set(scriptIncludeAPIName, scriptInclude.APIName)
+	data.Set(commonProtectionPolicy, scriptInclude.ProtectionPolicy)
 }
 
 func resourceToScriptInclude(data *schema.ResourceData) *client.ScriptInclude {
@@ -139,5 +136,6 @@ func resourceToScriptInclude(data *schema.ResourceData) *client.ScriptInclude {
 		Access:         data.Get(scriptIncludeAccess).(string),
 	}
 	scriptInclude.Id = data.Id()
+	scriptInclude.ProtectionPolicy = data.Get(commonProtectionPolicy).(string)
 	return &scriptInclude
 }

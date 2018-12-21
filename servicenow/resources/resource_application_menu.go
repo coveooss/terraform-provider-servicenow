@@ -1,8 +1,6 @@
 package resources
 
 import (
-	"fmt"
-
 	"github.com/coveo/terraform-provider-servicenow/servicenow/client"
 	"github.com/hashicorp/terraform/helper/schema"
 )
@@ -52,10 +50,7 @@ func ResourceApplicationMenu() *schema.Resource {
 				Default:     "browser",
 				Description: "Type of device where this menu will appear. Can be 'browser' or 'mobile'.",
 				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
-					v := val.(string)
-					if v != "browser" && v != "mobile" {
-						errs = append(errs, fmt.Errorf("%q must be 'browser' or 'mobile', got: %s", key, v))
-					}
+					warns, errs = validateStringValue(val.(string), key, []string{"browser", "mobile"})
 					return
 				},
 			},
@@ -83,6 +78,7 @@ func ResourceApplicationMenu() *schema.Resource {
 				Description: "Whether or not this application is in use.",
 				Default:     true,
 			},
+			commonProtectionPolicy: getProtectionPolicySchema(),
 		},
 	}
 }
@@ -137,6 +133,7 @@ func resourceFromApplicationMenu(data *schema.ResourceData, applicationMenu *cli
 	data.Set(applicationMenuRoles, applicationMenu.Roles)
 	data.Set(applicationMenuCategory, applicationMenu.CategoryID)
 	data.Set(applicationMenuActive, applicationMenu.Active)
+	data.Set(commonProtectionPolicy, applicationMenu.ProtectionPolicy)
 }
 
 func resourceToApplicationMenu(data *schema.ResourceData) *client.ApplicationMenu {
@@ -151,5 +148,6 @@ func resourceToApplicationMenu(data *schema.ResourceData) *client.ApplicationMen
 		Active:      data.Get(applicationMenuActive).(bool),
 	}
 	applicationMenu.Id = data.Id()
+	applicationMenu.ProtectionPolicy = data.Get(commonProtectionPolicy).(string)
 	return &applicationMenu
 }

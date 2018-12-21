@@ -1,8 +1,6 @@
 package resources
 
 import (
-	"fmt"
-
 	"github.com/coveo/terraform-provider-servicenow/servicenow/client"
 	"github.com/hashicorp/terraform/helper/schema"
 )
@@ -30,10 +28,7 @@ func ResourceCssInclude() *schema.Resource {
 				Optional: true,
 				Default:  "url",
 				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
-					v := val.(string)
-					if v != "url" && v != "local" {
-						errs = append(errs, fmt.Errorf("%q must be 'url' or 'local', got: %s", key, v))
-					}
+					warns, errs = validateStringValue(val.(string), key, []string{"url", "local"})
 					return
 				},
 			},
