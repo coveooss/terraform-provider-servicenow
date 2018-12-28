@@ -1,7 +1,6 @@
 package client
 
 import (
-	"encoding/json"
 	"fmt"
 )
 
@@ -34,17 +33,8 @@ func (client *ServiceNowClient) GetRole(id string) (*Role, error) {
 
 // GetRoleByName retrieves a specific Role in ServiceNow with it's name attribute.
 func (client *ServiceNowClient) GetRoleByName(name string) (*Role, error) {
-	jsonResponse, err := client.requestJSON("GET", endpointRole+"?JSONv2&sysparm_query=name="+name, nil)
-	if err != nil {
-		return nil, err
-	}
-
 	rolePageResults := RoleResults{}
-	if err := json.Unmarshal(jsonResponse, &rolePageResults); err != nil {
-		return nil, err
-	}
-
-	if err := rolePageResults.validate(); err != nil {
+	if err := client.getObjectByName(endpointRole, name, &rolePageResults); err != nil {
 		return nil, err
 	}
 

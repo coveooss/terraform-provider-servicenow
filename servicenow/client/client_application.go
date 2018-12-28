@@ -1,7 +1,6 @@
 package client
 
 import (
-	"encoding/json"
 	"fmt"
 )
 
@@ -32,17 +31,8 @@ func (client *ServiceNowClient) GetApplication(id string) (*Application, error) 
 
 // GetApplicationByName retrieves a specific Application in ServiceNow with it's name attribute.
 func (client *ServiceNowClient) GetApplicationByName(name string) (*Application, error) {
-	jsonResponse, err := client.requestJSON("GET", endpointApplication+"?JSONv2&sysparm_query=name="+name, nil)
-	if err != nil {
-		return nil, err
-	}
-
 	applicationPageResults := ApplicationResults{}
-	if err := json.Unmarshal(jsonResponse, &applicationPageResults); err != nil {
-		return nil, err
-	}
-
-	if err := applicationPageResults.validate(); err != nil {
+	if err := client.getObjectByName(endpointApplication, name, &applicationPageResults); err != nil {
 		return nil, err
 	}
 

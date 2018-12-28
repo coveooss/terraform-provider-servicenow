@@ -97,6 +97,20 @@ func (client *ServiceNowClient) getObject(endpoint string, id string, responseOb
 	return responseObjectOut.validate()
 }
 
+/// getObjectByName retrieves an object via its name attribute.
+func (client *ServiceNowClient) getObjectByName(endpoint string, name string, responseObjectOut RequestResults) error {
+	jsonResponse, err := client.requestJSON("GET", endpoint+"?JSONv2&sysparm_query=name="+name, nil)
+	if err != nil {
+		return err
+	}
+
+	if err := json.Unmarshal(jsonResponse, responseObjectOut); err != nil {
+		return err
+	}
+
+	return responseObjectOut.validate()
+}
+
 // createObject creates a new object in ServiceNow, validates the response and returns it.
 // responseObjectOut parameter must be a pointer.
 func (client *ServiceNowClient) createObject(endpoint string, objectToCreate interface{}, responseObjectOut RequestResults) error {
