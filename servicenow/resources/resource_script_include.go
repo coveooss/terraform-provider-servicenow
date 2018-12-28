@@ -70,6 +70,7 @@ func ResourceScriptInclude() *schema.Resource {
 				Description: "Full name of the Script Include needed to call it.",
 			},
 			commonProtectionPolicy: getProtectionPolicySchema(),
+			commonScope:            getScopeSchema(),
 		},
 	}
 }
@@ -124,6 +125,7 @@ func resourceFromScriptInclude(data *schema.ResourceData, scriptInclude *client.
 	data.Set(scriptIncludeAccess, scriptInclude.Access)
 	data.Set(scriptIncludeAPIName, scriptInclude.APIName)
 	data.Set(commonProtectionPolicy, scriptInclude.ProtectionPolicy)
+	data.Set(commonScope, scriptInclude.Scope)
 }
 
 func resourceToScriptInclude(data *schema.ResourceData) *client.ScriptInclude {
@@ -137,5 +139,6 @@ func resourceToScriptInclude(data *schema.ResourceData) *client.ScriptInclude {
 	}
 	scriptInclude.Id = data.Id()
 	scriptInclude.ProtectionPolicy = data.Get(commonProtectionPolicy).(string)
+	scriptInclude.Scope = data.Get(commonScope).(string)
 	return &scriptInclude
 }

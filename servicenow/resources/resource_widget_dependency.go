@@ -36,6 +36,7 @@ func ResourceWidgetDependency() *schema.Resource {
 				Optional: true,
 				Default:  false,
 			},
+			commonScope: getScopeSchema(),
 		},
 	}
 }
@@ -85,6 +86,7 @@ func resourceFromWidgetDependency(data *schema.ResourceData, widgetDependency *c
 	data.Set(widgetDependencyName, widgetDependency.Name)
 	data.Set(widgetDependencyModule, widgetDependency.Module)
 	data.Set(widgetDependencyPageLoad, widgetDependency.PageLoad)
+	data.Set(commonScope, widgetDependency.Scope)
 }
 
 func resourceToWidgetDependency(data *schema.ResourceData) *client.WidgetDependency {
@@ -94,5 +96,6 @@ func resourceToWidgetDependency(data *schema.ResourceData) *client.WidgetDepende
 		PageLoad: data.Get(widgetDependencyPageLoad).(bool),
 	}
 	widgetDependency.Id = data.Id()
+	widgetDependency.Scope = data.Get(commonScope).(string)
 	return &widgetDependency
 }

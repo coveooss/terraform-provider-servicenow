@@ -41,7 +41,7 @@ func (client *ServiceNowClient) GetApplicationModule(id string) (*ApplicationMod
 // include the GUID (sys_id) created in ServiceNow.
 func (client *ServiceNowClient) CreateApplicationModule(applicationModule *ApplicationModule) (*ApplicationModule, error) {
 	applicationModulePageResults := ApplicationModuleResults{}
-	if err := client.createObject(endpointApplicationModule, applicationModule, &applicationModulePageResults); err != nil {
+	if err := client.createObject(endpointApplicationModule, applicationModule.Scope, applicationModule, &applicationModulePageResults); err != nil {
 		return nil, err
 	}
 

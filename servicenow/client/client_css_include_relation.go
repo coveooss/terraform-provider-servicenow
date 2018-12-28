@@ -32,7 +32,7 @@ func (client *ServiceNowClient) GetCssIncludeRelation(id string) (*CssIncludeRel
 // CreateCssIncludeRelation creates a widget dependency relation in ServiceNow and returns the newly created relation.
 func (client *ServiceNowClient) CreateCssIncludeRelation(relation *CssIncludeRelation) (*CssIncludeRelation, error) {
 	relationResults := CssIncludeRelationResults{}
-	if err := client.createObject(endpointCssIncludeRelation, relation, &relationResults); err != nil {
+	if err := client.createObject(endpointCssIncludeRelation, relation.Scope, relation, &relationResults); err != nil {
 		return nil, err
 	}
 

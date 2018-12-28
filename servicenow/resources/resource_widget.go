@@ -107,6 +107,7 @@ func ResourceWidget() *schema.Resource {
 				Default:  "c",
 			},
 			commonProtectionPolicy: getProtectionPolicySchema(),
+			commonScope:            getScopeSchema(),
 		},
 	}
 }
@@ -169,6 +170,7 @@ func resourceFromWidget(data *schema.ResourceData, widget *client.Widget) {
 	data.Set(widgetDataTable, widget.DataTable)
 	data.Set(widgetControllerAs, widget.ControllerAs)
 	data.Set(commonProtectionPolicy, widget.ProtectionPolicy)
+	data.Set(commonScope, widget.Scope)
 }
 
 func resourceToWidget(data *schema.ResourceData) *client.Widget {
@@ -191,5 +193,6 @@ func resourceToWidget(data *schema.ResourceData) *client.Widget {
 	}
 	widget.Id = data.Id()
 	widget.ProtectionPolicy = data.Get(commonProtectionPolicy).(string)
+	widget.Scope = data.Get(commonScope).(string)
 	return &widget
 }

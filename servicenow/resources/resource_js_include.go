@@ -46,6 +46,7 @@ func ResourceJsInclude() *schema.Resource {
 				Optional: true,
 				Default:  "",
 			},
+			commonScope: getScopeSchema(),
 		},
 	}
 }
@@ -96,6 +97,7 @@ func resourceFromJsInclude(data *schema.ResourceData, jsInclude *client.JsInclud
 	data.Set(jsIncludeDisplayName, jsInclude.DisplayName)
 	data.Set(jsIncludeUrl, jsInclude.Url)
 	data.Set(jsIncludeUiScriptId, jsInclude.UiScriptId)
+	data.Set(commonScope, jsInclude.Scope)
 }
 
 func resourceToJsInclude(data *schema.ResourceData) *client.JsInclude {
@@ -106,5 +108,6 @@ func resourceToJsInclude(data *schema.ResourceData) *client.JsInclude {
 		UiScriptId:  data.Get(jsIncludeUiScriptId).(string),
 	}
 	jsInclude.Id = data.Id()
+	jsInclude.Scope = data.Get(commonScope).(string)
 	return &jsInclude
 }

@@ -63,6 +63,7 @@ func ResourceUiPage() *schema.Resource {
 				Computed: true,
 			},
 			commonProtectionPolicy: getProtectionPolicySchema(),
+			commonScope:            getScopeSchema(),
 		},
 	}
 }
@@ -118,6 +119,7 @@ func resourceFromUiPage(data *schema.ResourceData, page *client.UiPage) {
 	data.Set(uiPageCategory, page.Category)
 	data.Set(uiPageEndpoint, page.Endpoint)
 	data.Set(commonProtectionPolicy, page.ProtectionPolicy)
+	data.Set(commonScope, page.Scope)
 }
 
 func resourceToUiPage(data *schema.ResourceData) *client.UiPage {
@@ -132,5 +134,6 @@ func resourceToUiPage(data *schema.ResourceData) *client.UiPage {
 	}
 	uiPage.Id = data.Id()
 	uiPage.ProtectionPolicy = data.Get(commonProtectionPolicy).(string)
+	uiPage.Scope = data.Get(commonScope).(string)
 	return &uiPage
 }

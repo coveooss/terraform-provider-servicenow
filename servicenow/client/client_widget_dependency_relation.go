@@ -31,7 +31,7 @@ func (client *ServiceNowClient) GetWidgetDependencyRelation(id string) (*WidgetD
 // CreateWidgetDependencyRelation creates a widget dependency relation in ServiceNow and returns the newly created relation.
 func (client *ServiceNowClient) CreateWidgetDependencyRelation(relation *WidgetDependencyRelation) (*WidgetDependencyRelation, error) {
 	relationResults := WidgetDependencyRelationResults{}
-	if err := client.createObject(endpointWidgetDependencyRelation, relation, &relationResults); err != nil {
+	if err := client.createObject(endpointWidgetDependencyRelation, relation.Scope, relation, &relationResults); err != nil {
 		return nil, err
 	}
 

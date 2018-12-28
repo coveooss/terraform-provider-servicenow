@@ -45,7 +45,7 @@ func (client *ServiceNowClient) GetRoleByName(name string) (*Role, error) {
 // include the GUID (sys_id) created in ServiceNow.
 func (client *ServiceNowClient) CreateRole(role *Role) (*Role, error) {
 	rolePageResults := RoleResults{}
-	if err := client.createObject(endpointRole, role, &rolePageResults); err != nil {
+	if err := client.createObject(endpointRole, role.Scope, role, &rolePageResults); err != nil {
 		return nil, err
 	}
 

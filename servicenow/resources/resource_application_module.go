@@ -97,6 +97,7 @@ func ResourceApplicationModule() *schema.Resource {
 				Description: "The full name of the table where this module will redirect when the link type is 'LIST'.",
 			},
 			commonProtectionPolicy: getProtectionPolicySchema(),
+			commonScope:            getScopeSchema(),
 		},
 	}
 }
@@ -155,6 +156,7 @@ func resourceFromApplicationModule(data *schema.ResourceData, applicationModule 
 	data.Set(applicationModuleWindowName, applicationModule.WindowName)
 	data.Set(applicationModuleTableName, applicationModule.TableName)
 	data.Set(commonProtectionPolicy, applicationModule.ProtectionPolicy)
+	data.Set(commonScope, applicationModule.Scope)
 }
 
 func resourceToApplicationModule(data *schema.ResourceData) *client.ApplicationModule {
@@ -173,5 +175,6 @@ func resourceToApplicationModule(data *schema.ResourceData) *client.ApplicationM
 	}
 	applicationModule.Id = data.Id()
 	applicationModule.ProtectionPolicy = data.Get(commonProtectionPolicy).(string)
+	applicationModule.Scope = data.Get(commonScope).(string)
 	return &applicationModule
 }

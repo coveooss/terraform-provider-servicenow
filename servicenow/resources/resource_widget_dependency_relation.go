@@ -29,6 +29,7 @@ func ResourceWidgetDependencyRelation() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			commonScope: getScopeSchema(),
 		},
 	}
 }
@@ -77,6 +78,7 @@ func resourceFromWidgetDepRelation(data *schema.ResourceData, relation *client.W
 	data.SetId(relation.Id)
 	data.Set(widgetDepRelationDependencyId, relation.DependencyId)
 	data.Set(widgetDepRelationWidgetId, relation.WidgetId)
+	data.Set(commonScope, relation.Scope)
 }
 
 func resourceToWidgetDepRelation(data *schema.ResourceData) *client.WidgetDependencyRelation {
@@ -85,5 +87,6 @@ func resourceToWidgetDepRelation(data *schema.ResourceData) *client.WidgetDepend
 		WidgetId:     data.Get(widgetDepRelationWidgetId).(string),
 	}
 	relation.Id = data.Id()
+	relation.Scope = data.Get(commonScope).(string)
 	return &relation
 }

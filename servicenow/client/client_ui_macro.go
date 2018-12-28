@@ -35,7 +35,7 @@ func (client *ServiceNowClient) GetUiMacro(id string) (*UiMacro, error) {
 // include the GUID (sys_id) created in ServiceNow.
 func (client *ServiceNowClient) CreateUiMacro(uiMacro *UiMacro) (*UiMacro, error) {
 	uiMacroPageResults := UiMacroResults{}
-	if err := client.createObject(endpointUiMacro, uiMacro, &uiMacroPageResults); err != nil {
+	if err := client.createObject(endpointUiMacro, uiMacro.Scope, uiMacro, &uiMacroPageResults); err != nil {
 		return nil, err
 	}
 

@@ -32,7 +32,7 @@ func (client *ServiceNowClient) GetWidgetDependency(id string) (*WidgetDependenc
 // CreateWidgetDependency creates a Widget Dependency in ServiceNow and returns the newly created widget dependency.
 func (client *ServiceNowClient) CreateWidgetDependency(widgetDependency *WidgetDependency) (*WidgetDependency, error) {
 	widgetDependencyResults := WidgetDependencyResults{}
-	if err := client.createObject(endpointWidgetDependency, widgetDependency, &widgetDependencyResults); err != nil {
+	if err := client.createObject(endpointWidgetDependency, widgetDependency.Scope, widgetDependency, &widgetDependencyResults); err != nil {
 		return nil, err
 	}
 

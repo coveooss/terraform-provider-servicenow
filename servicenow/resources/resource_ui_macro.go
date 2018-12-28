@@ -52,6 +52,7 @@ func ResourceUiMacro() *schema.Resource {
 				Description: "Whether or not this Macro is enabled.",
 			},
 			commonProtectionPolicy: getProtectionPolicySchema(),
+			commonScope:            getScopeSchema(),
 		},
 	}
 }
@@ -104,6 +105,7 @@ func resourceFromUiMacro(data *schema.ResourceData, uiMacro *client.UiMacro) {
 	data.Set(uiMacroAPIName, uiMacro.APIName)
 	data.Set(uiMacroActive, uiMacro.Active)
 	data.Set(commonProtectionPolicy, uiMacro.ProtectionPolicy)
+	data.Set(commonScope, uiMacro.Scope)
 }
 
 func resourceToUiMacro(data *schema.ResourceData) *client.UiMacro {
@@ -116,5 +118,6 @@ func resourceToUiMacro(data *schema.ResourceData) *client.UiMacro {
 	}
 	uiMacro.Id = data.Id()
 	uiMacro.ProtectionPolicy = data.Get(commonProtectionPolicy).(string)
+	uiMacro.Scope = data.Get(commonScope).(string)
 	return &uiMacro
 }

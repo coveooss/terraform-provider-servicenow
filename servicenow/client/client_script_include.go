@@ -37,7 +37,7 @@ func (client *ServiceNowClient) GetScriptInclude(id string) (*ScriptInclude, err
 // include the GUID (sys_id) created in ServiceNow.
 func (client *ServiceNowClient) CreateScriptInclude(scriptInclude *ScriptInclude) (*ScriptInclude, error) {
 	scriptIncludePageResults := ScriptIncludeResults{}
-	if err := client.createObject(endpointScriptInclude, scriptInclude, &scriptIncludePageResults); err != nil {
+	if err := client.createObject(endpointScriptInclude, scriptInclude.Scope, scriptInclude, &scriptIncludePageResults); err != nil {
 		return nil, err
 	}
 

@@ -43,7 +43,7 @@ func (client *ServiceNowClient) GetApplicationByName(name string) (*Application,
 // include the GUID (sys_id) created in ServiceNow.
 func (client *ServiceNowClient) CreateApplication(application *Application) (*Application, error) {
 	applicationPageResults := ApplicationResults{}
-	if err := client.createObject(endpointApplication, application, &applicationPageResults); err != nil {
+	if err := client.createObject(endpointApplication, "", application, &applicationPageResults); err != nil {
 		return nil, err
 	}
 
