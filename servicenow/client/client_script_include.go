@@ -15,7 +15,7 @@ type ScriptInclude struct {
 	Script         string `json:"script"`
 	Active         bool   `json:"active,string"`
 	Access         string `json:"access"`
-	APIName        string `json:"api_name"`
+	APIName        string `json:"api_name,omitempty"`
 }
 
 // ScriptIncludeResults is the object returned by ServiceNow API when saving or retrieving records.
