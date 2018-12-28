@@ -46,6 +46,7 @@ func ResourceCssInclude() *schema.Resource {
 				Optional: true,
 				Default:  "",
 			},
+			commonScope: getScopeSchema(),
 		},
 	}
 }
@@ -96,6 +97,7 @@ func resourceFromCssInclude(data *schema.ResourceData, cssInclude *client.CssInc
 	data.Set(cssIncludeName, cssInclude.Name)
 	data.Set(cssIncludeUrl, cssInclude.Url)
 	data.Set(cssIncludeCssId, cssInclude.CssId)
+	data.Set(commonScope, cssInclude.Scope)
 }
 
 func resourceToCssInclude(data *schema.ResourceData) *client.CssInclude {
@@ -106,5 +108,6 @@ func resourceToCssInclude(data *schema.ResourceData) *client.CssInclude {
 		CssId:  data.Get(cssIncludeCssId).(string),
 	}
 	cssInclude.Id = data.Id()
+	cssInclude.Scope = data.Get(commonScope).(string)
 	return &cssInclude
 }

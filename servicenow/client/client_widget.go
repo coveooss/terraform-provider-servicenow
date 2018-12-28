@@ -45,7 +45,7 @@ func (client *ServiceNowClient) GetWidget(id string) (*Widget, error) {
 // include the GUID (sys_id) created in ServiceNow.
 func (client *ServiceNowClient) CreateWidget(widget *Widget) (*Widget, error) {
 	widgetResults := WidgetResults{}
-	if err := client.createObject(endpointWidget, widget, &widgetResults); err != nil {
+	if err := client.createObject(endpointWidget, widget.Scope, widget, &widgetResults); err != nil {
 		return nil, err
 	}
 

@@ -25,6 +25,7 @@ type RequestResults interface {
 type BaseResult struct {
 	Id               string       `json:"sys_id,omitempty"`
 	ProtectionPolicy string       `json:"sys_policy,omitempty"`
+	Scope            string       `json:"sys_scope,omitempty"`
 	Status           string       `json:"__status,omitempty"`
 	Error            *ErrorDetail `json:"__error,omitempty"`
 }
@@ -113,8 +114,13 @@ func (client *ServiceNowClient) getObjectByName(endpoint string, name string, re
 
 // createObject creates a new object in ServiceNow, validates the response and returns it.
 // responseObjectOut parameter must be a pointer.
-func (client *ServiceNowClient) createObject(endpoint string, objectToCreate interface{}, responseObjectOut RequestResults) error {
-	jsonResponse, err := client.requestJSON("POST", endpoint+"?JSONv2&sysparm_action=insert", objectToCreate)
+func (client *ServiceNowClient) createObject(endpoint string, scope string, objectToCreate interface{}, responseObjectOut RequestResults) error {
+	url := endpoint + "?JSONv2&sysparm_action=insert"
+	if scope != "" {
+		url += "&sysparm_record_scope=" + scope
+	}
+
+	jsonResponse, err := client.requestJSON("POST", url, objectToCreate)
 	if err != nil {
 		return err
 	}

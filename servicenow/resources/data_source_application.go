@@ -9,17 +9,7 @@ import (
 func DataSourceApplication() *schema.Resource {
 	// Copy the schema from the resource.
 	resourceSchema := ResourceApplication().Schema
-
-	// Change required parameters. For the data source, name is required and everything else is computed.
-	for _, schema := range resourceSchema {
-		schema.Computed = true
-		schema.Required = false
-		schema.Optional = false
-		schema.Default = nil
-	}
-
-	resourceSchema[applicationName].Computed = false
-	resourceSchema[applicationName].Required = true
+	setOnlyRequiredSchema(resourceSchema, applicationName)
 
 	return &schema.Resource{
 		Read:   readDataSourceApplication,

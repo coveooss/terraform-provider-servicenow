@@ -55,7 +55,7 @@ func (client *ServiceNowClient) GetDBTableByName(name string) (*DBTable, error) 
 // include the GUID (sys_id) created in ServiceNow.
 func (client *ServiceNowClient) CreateDBTable(dbTable *DBTable) (*DBTable, error) {
 	dbTablePageResults := DBTableResults{}
-	if err := client.createObject(endpointDBTable, dbTable, &dbTablePageResults); err != nil {
+	if err := client.createObject(endpointDBTable, dbTable.Scope, dbTable, &dbTablePageResults); err != nil {
 		return nil, err
 	}
 

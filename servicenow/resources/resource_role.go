@@ -48,6 +48,7 @@ func ResourceRole() *schema.Resource {
 				Computed: true,
 			},
 			commonProtectionPolicy: getProtectionPolicySchema(),
+			commonScope:            getScopeSchema(),
 		},
 	}
 }
@@ -100,6 +101,7 @@ func resourceFromRole(data *schema.ResourceData, role *client.Role) {
 	data.Set(roleAssignableBy, role.AssignableBy)
 	data.Set(roleName, role.Name)
 	data.Set(commonProtectionPolicy, role.ProtectionPolicy)
+	data.Set(commonScope, role.Scope)
 }
 
 func resourceToRole(data *schema.ResourceData) *client.Role {
@@ -111,5 +113,6 @@ func resourceToRole(data *schema.ResourceData) *client.Role {
 	}
 	role.Id = data.Id()
 	role.ProtectionPolicy = data.Get(commonProtectionPolicy).(string)
+	role.Scope = data.Get(commonScope).(string)
 	return &role
 }

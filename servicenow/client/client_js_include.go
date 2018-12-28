@@ -33,7 +33,7 @@ func (client *ServiceNowClient) GetJsInclude(id string) (*JsInclude, error) {
 // CreateJsInclude creates a Js Include in ServiceNow and returns the newly created JS Include.
 func (client *ServiceNowClient) CreateJsInclude(jsInclude *JsInclude) (*JsInclude, error) {
 	jsIncludeResults := JsIncludeResults{}
-	if err := client.createObject(endpointJsInclude, jsInclude, &jsIncludeResults); err != nil {
+	if err := client.createObject(endpointJsInclude, jsInclude.Scope, jsInclude, &jsIncludeResults); err != nil {
 		return nil, err
 	}
 

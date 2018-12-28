@@ -33,7 +33,7 @@ func (client *ServiceNowClient) GetCssInclude(id string) (*CssInclude, error) {
 // CreateCssInclude creates a CSS Include in ServiceNow and returns the newly created CSS Include.
 func (client *ServiceNowClient) CreateCssInclude(cssInclude *CssInclude) (*CssInclude, error) {
 	cssIncludeResults := CssIncludeResults{}
-	if err := client.createObject(endpointCssInclude, cssInclude, &cssIncludeResults); err != nil {
+	if err := client.createObject(endpointCssInclude, cssInclude.Scope, cssInclude, &cssIncludeResults); err != nil {
 		return nil, err
 	}
 

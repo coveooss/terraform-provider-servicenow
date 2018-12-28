@@ -104,6 +104,7 @@ func ResourceDBTable() *schema.Resource {
 				Computed:    true,
 				Description: "The internal name of the table.",
 			},
+			commonScope: getScopeSchema(),
 		},
 	}
 }
@@ -162,6 +163,7 @@ func resourceFromDBTable(data *schema.ResourceData, dbTable *client.DBTable) {
 	data.Set(dbTableExtendable, dbTable.Extendable)
 	data.Set(dbTableLiveFeed, dbTable.LiveFeed)
 	data.Set(dbTableName, dbTable.Name)
+	data.Set(commonScope, dbTable.Scope)
 }
 
 func resourceToDBTable(data *schema.ResourceData) *client.DBTable {
@@ -182,5 +184,6 @@ func resourceToDBTable(data *schema.ResourceData) *client.DBTable {
 		CreateMobileModule:   false,
 	}
 	dbTable.Id = data.Id()
+	dbTable.Scope = data.Get(commonScope).(string)
 	return &dbTable
 }

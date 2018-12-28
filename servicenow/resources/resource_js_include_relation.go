@@ -35,6 +35,7 @@ func ResourceJsIncludeRelation() *schema.Resource {
 				Optional: true,
 				Default:  100,
 			},
+			commonScope: getScopeSchema(),
 		},
 	}
 }
@@ -84,6 +85,7 @@ func resourceFromJsIncludeRelation(data *schema.ResourceData, jsIncludeRelation 
 	data.Set(jsIncludeRelationDependencyId, jsIncludeRelation.DependencyId)
 	data.Set(jsIncludeRelationJsIncludeId, jsIncludeRelation.JsIncludeId)
 	data.Set(jsIncludeRelationOrder, jsIncludeRelation.Order)
+	data.Set(commonScope, jsIncludeRelation.Scope)
 }
 
 func resourceToJsIncludeRelation(data *schema.ResourceData) *client.JsIncludeRelation {
@@ -93,5 +95,6 @@ func resourceToJsIncludeRelation(data *schema.ResourceData) *client.JsIncludeRel
 		Order:        data.Get(jsIncludeRelationOrder).(int),
 	}
 	jsIncludeRelation.Id = data.Id()
+	jsIncludeRelation.Scope = data.Get(commonScope).(string)
 	return &jsIncludeRelation
 }

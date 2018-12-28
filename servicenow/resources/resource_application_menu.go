@@ -79,6 +79,7 @@ func ResourceApplicationMenu() *schema.Resource {
 				Default:     true,
 			},
 			commonProtectionPolicy: getProtectionPolicySchema(),
+			commonScope:            getScopeSchema(),
 		},
 	}
 }
@@ -134,6 +135,7 @@ func resourceFromApplicationMenu(data *schema.ResourceData, applicationMenu *cli
 	data.Set(applicationMenuCategory, applicationMenu.CategoryID)
 	data.Set(applicationMenuActive, applicationMenu.Active)
 	data.Set(commonProtectionPolicy, applicationMenu.ProtectionPolicy)
+	data.Set(commonScope, applicationMenu.Scope)
 }
 
 func resourceToApplicationMenu(data *schema.ResourceData) *client.ApplicationMenu {
@@ -149,5 +151,6 @@ func resourceToApplicationMenu(data *schema.ResourceData) *client.ApplicationMen
 	}
 	applicationMenu.Id = data.Id()
 	applicationMenu.ProtectionPolicy = data.Get(commonProtectionPolicy).(string)
+	applicationMenu.Scope = data.Get(commonScope).(string)
 	return &applicationMenu
 }

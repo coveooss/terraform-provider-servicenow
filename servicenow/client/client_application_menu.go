@@ -38,7 +38,7 @@ func (client *ServiceNowClient) GetApplicationMenu(id string) (*ApplicationMenu,
 // include the GUID (sys_id) created in ServiceNow.
 func (client *ServiceNowClient) CreateApplicationMenu(applicationMenu *ApplicationMenu) (*ApplicationMenu, error) {
 	applicationMenuPageResults := ApplicationMenuResults{}
-	if err := client.createObject(endpointApplicationMenu, applicationMenu, &applicationMenuPageResults); err != nil {
+	if err := client.createObject(endpointApplicationMenu, applicationMenu.Scope, applicationMenu, &applicationMenuPageResults); err != nil {
 		return nil, err
 	}
 

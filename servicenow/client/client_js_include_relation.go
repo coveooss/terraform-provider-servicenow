@@ -32,7 +32,7 @@ func (client *ServiceNowClient) GetJsIncludeRelation(id string) (*JsIncludeRelat
 // CreateJsIncludeRelation creates a widget dependency relation in ServiceNow and returns the newly created relation.
 func (client *ServiceNowClient) CreateJsIncludeRelation(relation *JsIncludeRelation) (*JsIncludeRelation, error) {
 	relationResults := JsIncludeRelationResults{}
-	if err := client.createObject(endpointJsIncludeRelation, relation, &relationResults); err != nil {
+	if err := client.createObject(endpointJsIncludeRelation, relation.Scope, relation, &relationResults); err != nil {
 		return nil, err
 	}
 

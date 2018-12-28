@@ -35,6 +35,7 @@ func ResourceCssIncludeRelation() *schema.Resource {
 				Optional: true,
 				Default:  100,
 			},
+			commonScope: getScopeSchema(),
 		},
 	}
 }
@@ -84,6 +85,7 @@ func resourceFromCssIncludeRelation(data *schema.ResourceData, cssIncludeRelatio
 	data.Set(cssIncludeRelationDependencyId, cssIncludeRelation.DependencyId)
 	data.Set(cssIncludeRelationCssIncludeId, cssIncludeRelation.CssIncludeId)
 	data.Set(cssIncludeRelationOrder, cssIncludeRelation.Order)
+	data.Set(commonScope, cssIncludeRelation.Scope)
 }
 
 func resourceToCssIncludeRelation(data *schema.ResourceData) *client.CssIncludeRelation {
@@ -93,5 +95,6 @@ func resourceToCssIncludeRelation(data *schema.ResourceData) *client.CssIncludeR
 		Order:        data.Get(cssIncludeRelationOrder).(int),
 	}
 	cssIncludeRelation.Id = data.Id()
+	cssIncludeRelation.Scope = data.Get(commonScope).(string)
 	return &cssIncludeRelation
 }

@@ -38,7 +38,7 @@ func (client *ServiceNowClient) GetUiPage(id string) (*UiPage, error) {
 // include the GUID (sys_id) created in ServiceNow.
 func (client *ServiceNowClient) CreateUiPage(uiPage *UiPage) (*UiPage, error) {
 	uiPageResults := UiPageResults{}
-	if err := client.createObject(endpointUiPage, uiPage, &uiPageResults); err != nil {
+	if err := client.createObject(endpointUiPage, uiPage.Scope, uiPage, &uiPageResults); err != nil {
 		return nil, err
 	}
 
