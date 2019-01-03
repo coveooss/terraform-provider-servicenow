@@ -36,6 +36,7 @@ func setOnlyRequiredSchema(schema map[string]*schema.Schema, requiredName string
 		val.Optional = false
 		val.ForceNew = false
 		val.Default = nil
+		val.ValidateFunc = nil
 
 		if key == requiredName {
 			val.Computed = false
