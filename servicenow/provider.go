@@ -31,6 +31,7 @@ func Provider() *schema.Provider {
 			"servicenow_application":                resources.ResourceApplication(),
 			"servicenow_application_menu":           resources.ResourceApplicationMenu(),
 			"servicenow_application_module":         resources.ResourceApplicationModule(),
+			"servicenow_content_css":                resources.ResourceContentCss(),
 			"servicenow_css_include":                resources.ResourceCssInclude(),
 			"servicenow_css_include_relation":       resources.ResourceCssIncludeRelation(),
 			"servicenow_db_table":                   resources.ResourceDBTable(),
