@@ -40,6 +40,7 @@ func Provider() *schema.Provider {
 			"servicenow_oauth_entity":               resources.ResourceOAuthEntity(),
 			"servicenow_role":                       resources.ResourceRole(),
 			"servicenow_rest_message":               resources.ResourceRestMessage(),
+			"servicenow_rest_message_header":        resources.ResourceRestMessageHeader(),
 			"servicenow_rest_method":                resources.ResourceRestMethod(),
 			"servicenow_rest_method_header":         resources.ResourceRestMethodHeader(),
 			"servicenow_script_include":             resources.ResourceScriptInclude(),

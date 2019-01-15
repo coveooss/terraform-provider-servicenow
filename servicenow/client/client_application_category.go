@@ -10,7 +10,7 @@ const endpointApplicationCategory = "sys_app_category.do"
 type ApplicationCategory struct {
 	BaseResult
 	Name  string `json:"name"`
-	Order int    `json:"default_order,string"`
+	Order string `json:"default_order"`
 	Style string `json:"style"`
 }
 

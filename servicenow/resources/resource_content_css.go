@@ -32,16 +32,16 @@ func ResourceContentCss() *schema.Resource {
 				Optional: true,
 				Default:  "local",
 				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
-					warns, errs = validateStringValue(val.(string), key, []string{"url", "local"})
+					warns, errs = validateStringValue(val.(string), key, []string{"link", "local"})
 					return
 				},
-				Description: "The type of this content management style sheet. Can be 'url' or 'local'.",
+				Description: "The type of this content management style sheet. Can be 'link' or 'local'.",
 			},
 			contentCssUrl: {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Default:     "",
-				Description: "Used when 'type' is set to 'url'. Must be an absolute url to an external style sheet file.",
+				Description: "Used when 'type' is set to 'link'. Must be an absolute URL to an external style sheet file.",
 			},
 			contentCssStyle: {
 				Type:        schema.TypeString,
