@@ -17,7 +17,7 @@ func DataSourceApplicationCategory() *schema.Resource {
 			Required: true,
 		},
 		applicationCategoryOrder: {
-			Type:     schema.TypeInt,
+			Type:     schema.TypeString,
 			Computed: true,
 		},
 		applicationCategoryStyle: {

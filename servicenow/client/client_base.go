@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 )
 
 // ServiceNowClient is the client used to interact with ServiceNow API.
@@ -100,7 +101,7 @@ func (client *ServiceNowClient) getObject(endpoint string, id string, responseOb
 
 /// getObjectByName retrieves an object via its name attribute.
 func (client *ServiceNowClient) getObjectByName(endpoint string, name string, responseObjectOut RequestResults) error {
-	jsonResponse, err := client.requestJSON("GET", endpoint+"?JSONv2&sysparm_query=name="+name, nil)
+	jsonResponse, err := client.requestJSON("GET", endpoint+"?JSONv2&sysparm_query=name="+url.QueryEscape(name), nil)
 	if err != nil {
 		return err
 	}
