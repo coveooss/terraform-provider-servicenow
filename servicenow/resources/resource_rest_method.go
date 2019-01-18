@@ -60,9 +60,9 @@ func ResourceRestMethod() *schema.Resource {
 }
 
 func readResourceRestMethod(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	restMethod, err := client.GetRestMethod(data.Id())
-	if err != nil {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	restMethod := &client.RestMethod{}
+	if err := snowClient.GetObject(client.EndpointRestMethod, data.Id(), restMethod); err != nil {
 		data.SetId("")
 		return err
 	}
@@ -73,9 +73,9 @@ func readResourceRestMethod(data *schema.ResourceData, serviceNowClient interfac
 }
 
 func createResourceRestMethod(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	restMethod, err := client.CreateRestMethod(resourceToRestMethod(data))
-	if err != nil {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	restMethod := resourceToRestMethod(data)
+	if err := snowClient.CreateObject(client.EndpointRestMethod, restMethod); err != nil {
 		return err
 	}
 
@@ -85,9 +85,8 @@ func createResourceRestMethod(data *schema.ResourceData, serviceNowClient interf
 }
 
 func updateResourceRestMethod(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	err := client.UpdateRestMethod(resourceToRestMethod(data))
-	if err != nil {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	if err := snowClient.UpdateObject(client.EndpointRestMethod, resourceToRestMethod(data)); err != nil {
 		return err
 	}
 
@@ -95,12 +94,12 @@ func updateResourceRestMethod(data *schema.ResourceData, serviceNowClient interf
 }
 
 func deleteResourceRestMethod(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	return client.DeleteRestMethod(data.Id())
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	return snowClient.DeleteObject(client.EndpointRestMethod, data.Id())
 }
 
 func resourceFromRestMethod(data *schema.ResourceData, restMethod *client.RestMethod) {
-	data.SetId(restMethod.Id)
+	data.SetId(restMethod.ID)
 	data.Set(restMethodName, restMethod.Name)
 	data.Set(restMethodMessageID, restMethod.MessageID)
 	data.Set(restMethodHTTPMethod, restMethod.HTTPMethod)
@@ -117,7 +116,7 @@ func resourceToRestMethod(data *schema.ResourceData) *client.RestMethod {
 		RestEndpoint:       data.Get(restMethodRestEndpoint).(string),
 		AuthenticationType: "inherit_from_parent",
 	}
-	restMethod.Id = data.Id()
+	restMethod.ID = data.Id()
 	restMethod.Scope = data.Get(commonScope).(string)
 	return &restMethod
 }

@@ -54,9 +54,9 @@ func ResourceRole() *schema.Resource {
 }
 
 func readResourceRole(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	role, err := client.GetRole(data.Id())
-	if err != nil {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	role := &client.Role{}
+	if err := snowClient.GetObject(client.EndpointRole, data.Id(), role); err != nil {
 		data.SetId("")
 		return err
 	}
@@ -67,21 +67,20 @@ func readResourceRole(data *schema.ResourceData, serviceNowClient interface{}) e
 }
 
 func createResourceRole(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	createdRole, err := client.CreateRole(resourceToRole(data))
-	if err != nil {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	role := resourceToRole(data)
+	if err := snowClient.CreateObject(client.EndpointRole, role); err != nil {
 		return err
 	}
 
-	resourceFromRole(data, createdRole)
+	resourceFromRole(data, role)
 
 	return readResourceRole(data, serviceNowClient)
 }
 
 func updateResourceRole(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	err := client.UpdateRole(resourceToRole(data))
-	if err != nil {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	if err := snowClient.UpdateObject(client.EndpointRole, resourceToRole(data)); err != nil {
 		return err
 	}
 
@@ -89,12 +88,12 @@ func updateResourceRole(data *schema.ResourceData, serviceNowClient interface{})
 }
 
 func deleteResourceRole(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	return client.DeleteRole(data.Id())
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	return snowClient.DeleteObject(client.EndpointRole, data.Id())
 }
 
 func resourceFromRole(data *schema.ResourceData, role *client.Role) {
-	data.SetId(role.Id)
+	data.SetId(role.ID)
 	data.Set(roleDescription, role.Description)
 	data.Set(roleSuffix, role.Suffix)
 	data.Set(roleElevatedPrivilege, role.ElevatedPrivilege)
@@ -111,7 +110,7 @@ func resourceToRole(data *schema.ResourceData) *client.Role {
 		ElevatedPrivilege: data.Get(roleElevatedPrivilege).(bool),
 		AssignableBy:      data.Get(roleAssignableBy).(string),
 	}
-	role.Id = data.Id()
+	role.ID = data.Id()
 	role.ProtectionPolicy = data.Get(commonProtectionPolicy).(string)
 	role.Scope = data.Get(commonScope).(string)
 	return &role

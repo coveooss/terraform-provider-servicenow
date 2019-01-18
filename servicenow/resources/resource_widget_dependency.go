@@ -42,9 +42,9 @@ func ResourceWidgetDependency() *schema.Resource {
 }
 
 func readResourceWidgetDependency(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	widgetDependency, err := client.GetWidgetDependency(data.Id())
-	if err != nil {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	widgetDependency := &client.WidgetDependency{}
+	if err := snowClient.GetObject(client.EndpointWidgetDependency, data.Id(), widgetDependency); err != nil {
 		data.SetId("")
 		return err
 	}
@@ -55,21 +55,20 @@ func readResourceWidgetDependency(data *schema.ResourceData, serviceNowClient in
 }
 
 func createResourceWidgetDependency(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	createdPage, err := client.CreateWidgetDependency(resourceToWidgetDependency(data))
-	if err != nil {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	widgetDependency := resourceToWidgetDependency(data)
+	if err := snowClient.CreateObject(client.EndpointWidgetDependency, widgetDependency); err != nil {
 		return err
 	}
 
-	resourceFromWidgetDependency(data, createdPage)
+	resourceFromWidgetDependency(data, widgetDependency)
 
 	return readResourceWidgetDependency(data, serviceNowClient)
 }
 
 func updateResourceWidgetDependency(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	err := client.UpdateWidgetDependency(resourceToWidgetDependency(data))
-	if err != nil {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	if err := snowClient.UpdateObject(client.EndpointWidgetDependency, resourceToWidgetDependency(data)); err != nil {
 		return err
 	}
 
@@ -77,12 +76,12 @@ func updateResourceWidgetDependency(data *schema.ResourceData, serviceNowClient 
 }
 
 func deleteResourceWidgetDependency(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	return client.DeleteWidgetDependency(data.Id())
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	return snowClient.DeleteObject(client.EndpointWidgetDependency, data.Id())
 }
 
 func resourceFromWidgetDependency(data *schema.ResourceData, widgetDependency *client.WidgetDependency) {
-	data.SetId(widgetDependency.Id)
+	data.SetId(widgetDependency.ID)
 	data.Set(widgetDependencyName, widgetDependency.Name)
 	data.Set(widgetDependencyModule, widgetDependency.Module)
 	data.Set(widgetDependencyPageLoad, widgetDependency.PageLoad)
@@ -95,7 +94,7 @@ func resourceToWidgetDependency(data *schema.ResourceData) *client.WidgetDepende
 		Module:   data.Get(widgetDependencyModule).(string),
 		PageLoad: data.Get(widgetDependencyPageLoad).(bool),
 	}
-	widgetDependency.Id = data.Id()
+	widgetDependency.ID = data.Id()
 	widgetDependency.Scope = data.Get(commonScope).(string)
 	return &widgetDependency
 }

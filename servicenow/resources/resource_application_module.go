@@ -103,9 +103,9 @@ func ResourceApplicationModule() *schema.Resource {
 }
 
 func readResourceApplicationModule(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	applicationModule, err := client.GetApplicationModule(data.Id())
-	if err != nil {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	applicationModule := &client.ApplicationModule{}
+	if err := snowClient.GetObject(client.EndpointApplicationModule, data.Id(), applicationModule); err != nil {
 		data.SetId("")
 		return err
 	}
@@ -116,21 +116,20 @@ func readResourceApplicationModule(data *schema.ResourceData, serviceNowClient i
 }
 
 func createResourceApplicationModule(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	createdApplicationModule, err := client.CreateApplicationModule(resourceToApplicationModule(data))
-	if err != nil {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	applicationModule := resourceToApplicationModule(data)
+	if err := snowClient.CreateObject(client.EndpointApplicationModule, applicationModule); err != nil {
 		return err
 	}
 
-	resourceFromApplicationModule(data, createdApplicationModule)
+	resourceFromApplicationModule(data, applicationModule)
 
 	return readResourceApplicationModule(data, serviceNowClient)
 }
 
 func updateResourceApplicationModule(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	err := client.UpdateApplicationModule(resourceToApplicationModule(data))
-	if err != nil {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	if err := snowClient.UpdateObject(client.EndpointApplicationModule, resourceToApplicationModule(data)); err != nil {
 		return err
 	}
 
@@ -138,12 +137,12 @@ func updateResourceApplicationModule(data *schema.ResourceData, serviceNowClient
 }
 
 func deleteResourceApplicationModule(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	return client.DeleteApplicationModule(data.Id())
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	return snowClient.DeleteObject(client.EndpointApplicationModule, data.Id())
 }
 
 func resourceFromApplicationModule(data *schema.ResourceData, applicationModule *client.ApplicationModule) {
-	data.SetId(applicationModule.Id)
+	data.SetId(applicationModule.ID)
 	data.Set(applicationModuleTitle, applicationModule.Title)
 	data.Set(applicationModuleMenuID, applicationModule.MenuID)
 	data.Set(applicationModuleHint, applicationModule.Hint)
@@ -173,7 +172,7 @@ func resourceToApplicationModule(data *schema.ResourceData) *client.ApplicationM
 		WindowName:        data.Get(applicationModuleWindowName).(string),
 		TableName:         data.Get(applicationModuleTableName).(string),
 	}
-	applicationModule.Id = data.Id()
+	applicationModule.ID = data.Id()
 	applicationModule.ProtectionPolicy = data.Get(commonProtectionPolicy).(string)
 	applicationModule.Scope = data.Get(commonScope).(string)
 	return &applicationModule

@@ -110,9 +110,9 @@ func ResourceDBTable() *schema.Resource {
 }
 
 func readResourceDBTable(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	dbTable, err := client.GetDBTable(data.Id())
-	if err != nil {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	dbTable := &client.DBTable{}
+	if err := snowClient.GetObject(client.EndpointDBTable, data.Id(), dbTable); err != nil {
 		data.SetId("")
 		return err
 	}
@@ -123,21 +123,20 @@ func readResourceDBTable(data *schema.ResourceData, serviceNowClient interface{}
 }
 
 func createResourceDBTable(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	createdDBTable, err := client.CreateDBTable(resourceToDBTable(data))
-	if err != nil {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	dbTable := resourceToDBTable(data)
+	if err := snowClient.CreateObject(client.EndpointDBTable, dbTable); err != nil {
 		return err
 	}
 
-	resourceFromDBTable(data, createdDBTable)
+	resourceFromDBTable(data, dbTable)
 
 	return readResourceDBTable(data, serviceNowClient)
 }
 
 func updateResourceDBTable(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	err := client.UpdateDBTable(resourceToDBTable(data))
-	if err != nil {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	if err := snowClient.UpdateObject(client.EndpointDBTable, resourceToDBTable(data)); err != nil {
 		return err
 	}
 
@@ -145,12 +144,12 @@ func updateResourceDBTable(data *schema.ResourceData, serviceNowClient interface
 }
 
 func deleteResourceDBTable(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	return client.DeleteDBTable(data.Id())
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	return snowClient.DeleteObject(client.EndpointDBTable, data.Id())
 }
 
 func resourceFromDBTable(data *schema.ResourceData, dbTable *client.DBTable) {
-	data.SetId(dbTable.Id)
+	data.SetId(dbTable.ID)
 	data.Set(dbTableLabel, dbTable.Label)
 	data.Set(dbTableUserRole, dbTable.UserRole)
 	data.Set(dbTableAccess, dbTable.Access)
@@ -183,7 +182,7 @@ func resourceToDBTable(data *schema.ResourceData) *client.DBTable {
 		CreateModule:         false,
 		CreateMobileModule:   false,
 	}
-	dbTable.Id = data.Id()
+	dbTable.ID = data.Id()
 	dbTable.Scope = data.Get(commonScope).(string)
 	return &dbTable
 }

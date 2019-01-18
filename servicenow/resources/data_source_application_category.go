@@ -9,7 +9,7 @@ const applicationCategoryName = "name"
 const applicationCategoryOrder = "order"
 const applicationCategoryStyle = "style"
 
-// ResourceApplicationCategory is holding the info about an application category.
+// DataSourceApplicationCategory is holding the info about an application category.
 func DataSourceApplicationCategory() *schema.Resource {
 	resourceSchema := map[string]*schema.Schema{
 		applicationCategoryName: {
@@ -35,9 +35,9 @@ func DataSourceApplicationCategory() *schema.Resource {
 }
 
 func readResourceApplicationCategory(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	applicationCategory, err := client.GetApplicationCategoryByName(data.Get(applicationCategoryName).(string))
-	if err != nil {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	applicationCategory := &client.ApplicationCategory{}
+	if err := snowClient.GetObjectByName(client.EndpointApplicationCategory, data.Get(applicationCategoryName).(string), applicationCategory); err != nil {
 		data.SetId("")
 		return err
 	}
@@ -48,7 +48,7 @@ func readResourceApplicationCategory(data *schema.ResourceData, serviceNowClient
 }
 
 func resourceFromApplicationCategory(data *schema.ResourceData, applicationCategory *client.ApplicationCategory) {
-	data.SetId(applicationCategory.Id)
+	data.SetId(applicationCategory.ID)
 	data.Set(applicationCategoryName, applicationCategory.Name)
 	data.Set(applicationCategoryOrder, applicationCategory.Order)
 	data.Set(applicationCategoryStyle, applicationCategory.Style)

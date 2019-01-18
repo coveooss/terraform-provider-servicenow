@@ -11,16 +11,16 @@ const uiPageCategory = "category"
 const uiPageDirect = "direct"
 const uiPageClientScript = "client_script"
 const uiPageProcessingScript = "processing_script"
-const uiPageHtml = "html"
+const uiPageHTML = "html"
 const uiPageEndpoint = "endpoint"
 
-// ResourceUiPage manages a UI Page in ServiceNow.
-func ResourceUiPage() *schema.Resource {
+// ResourceUIPage manages a UI Page in ServiceNow.
+func ResourceUIPage() *schema.Resource {
 	return &schema.Resource{
-		Create: createResourceUiPage,
-		Read:   readResourceUiPage,
-		Update: updateResourceUiPage,
-		Delete: deleteResourceUiPage,
+		Create: createResourceUIPage,
+		Read:   readResourceUIPage,
+		Update: updateResourceUIPage,
+		Delete: deleteResourceUIPage,
 
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
@@ -54,7 +54,7 @@ func ResourceUiPage() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			uiPageHtml: {
+			uiPageHTML: {
 				Type:     schema.TypeString,
 				Required: true,
 			},
@@ -68,52 +68,51 @@ func ResourceUiPage() *schema.Resource {
 	}
 }
 
-func readResourceUiPage(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	uiPage, err := client.GetUiPage(data.Id())
-	if err != nil {
+func readResourceUIPage(data *schema.ResourceData, serviceNowClient interface{}) error {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	uiPage := &client.UIPage{}
+	if err := snowClient.GetObject(client.EndpointUIPage, data.Id(), uiPage); err != nil {
 		data.SetId("")
 		return err
 	}
 
-	resourceFromUiPage(data, uiPage)
+	resourceFromUIPage(data, uiPage)
 
 	return nil
 }
 
-func createResourceUiPage(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	createdPage, err := client.CreateUiPage(resourceToUiPage(data))
-	if err != nil {
+func createResourceUIPage(data *schema.ResourceData, serviceNowClient interface{}) error {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	uiPage := resourceToUIPage(data)
+	if err := snowClient.CreateObject(client.EndpointUIPage, uiPage); err != nil {
 		return err
 	}
 
-	resourceFromUiPage(data, createdPage)
+	resourceFromUIPage(data, uiPage)
 
-	return readResourceUiPage(data, serviceNowClient)
+	return readResourceUIPage(data, serviceNowClient)
 }
 
-func updateResourceUiPage(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	err := client.UpdateUiPage(resourceToUiPage(data))
-	if err != nil {
+func updateResourceUIPage(data *schema.ResourceData, serviceNowClient interface{}) error {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	if err := snowClient.UpdateObject(client.EndpointUIPage, resourceToUIPage(data)); err != nil {
 		return err
 	}
 
-	return readResourceUiPage(data, serviceNowClient)
+	return readResourceUIPage(data, serviceNowClient)
 }
 
-func deleteResourceUiPage(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	return client.DeleteUiPage(data.Id())
+func deleteResourceUIPage(data *schema.ResourceData, serviceNowClient interface{}) error {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	return snowClient.DeleteObject(client.EndpointUIPage, data.Id())
 }
 
-func resourceFromUiPage(data *schema.ResourceData, page *client.UiPage) {
-	data.SetId(page.Id)
+func resourceFromUIPage(data *schema.ResourceData, page *client.UIPage) {
+	data.SetId(page.ID)
 	data.Set(uiPageName, page.Name)
 	data.Set(uiPageDescription, page.Description)
 	data.Set(uiPageDirect, page.Direct)
-	data.Set(uiPageHtml, page.Html)
+	data.Set(uiPageHTML, page.HTML)
 	data.Set(uiPageProcessingScript, page.ProcessingScript)
 	data.Set(uiPageClientScript, page.ClientScript)
 	data.Set(uiPageCategory, page.Category)
@@ -122,17 +121,17 @@ func resourceFromUiPage(data *schema.ResourceData, page *client.UiPage) {
 	data.Set(commonScope, page.Scope)
 }
 
-func resourceToUiPage(data *schema.ResourceData) *client.UiPage {
-	uiPage := client.UiPage{
+func resourceToUIPage(data *schema.ResourceData) *client.UIPage {
+	uiPage := client.UIPage{
 		Name:             data.Get(uiPageName).(string),
 		Description:      data.Get(uiPageDescription).(string),
 		Direct:           data.Get(uiPageDirect).(bool),
-		Html:             data.Get(uiPageHtml).(string),
+		HTML:             data.Get(uiPageHTML).(string),
 		ProcessingScript: data.Get(uiPageProcessingScript).(string),
 		ClientScript:     data.Get(uiPageClientScript).(string),
 		Category:         data.Get(uiPageCategory).(string),
 	}
-	uiPage.Id = data.Id()
+	uiPage.ID = data.Id()
 	uiPage.ProtectionPolicy = data.Get(commonProtectionPolicy).(string)
 	uiPage.Scope = data.Get(commonScope).(string)
 	return &uiPage

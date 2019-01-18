@@ -5,6 +5,7 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
+// DataSourceDBTable reads a DB Table in ServiceNow.
 func DataSourceDBTable() *schema.Resource {
 	// Copy the schema from the resource.
 	resourceSchema := ResourceDBTable().Schema
@@ -17,9 +18,9 @@ func DataSourceDBTable() *schema.Resource {
 }
 
 func readDataSourceDBTable(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	dbTable, err := client.GetDBTableByName(data.Get(dbTableName).(string))
-	if err != nil {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	dbTable := &client.DBTable{}
+	if err := snowClient.GetObjectByName(client.EndpointDBTable, data.Get(dbTableName).(string), dbTable); err != nil {
 		data.SetId("")
 		return err
 	}

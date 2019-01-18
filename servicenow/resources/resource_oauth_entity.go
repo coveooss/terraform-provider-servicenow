@@ -14,7 +14,7 @@ const oauthEntityRedirectURL = "redirect_url"
 const oauthEntityLogoURL = "logo_url"
 const oauthEntityAccess = "access"
 
-// Resource to manage a OAuthEntity in ServiceNow.
+// ResourceOAuthEntity manages an OAuthEntity in ServiceNow.
 func ResourceOAuthEntity() *schema.Resource {
 	return &schema.Resource{
 		Create: createResourceOAuthEntity,
@@ -81,9 +81,9 @@ func ResourceOAuthEntity() *schema.Resource {
 }
 
 func readResourceOAuthEntity(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	oauthEntity, err := client.GetOAuthEntity(data.Id())
-	if err != nil {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	oauthEntity := &client.OAuthEntity{}
+	if err := snowClient.GetObject(client.EndpointOAuthEntity, data.Id(), oauthEntity); err != nil {
 		data.SetId("")
 		return err
 	}
@@ -94,21 +94,20 @@ func readResourceOAuthEntity(data *schema.ResourceData, serviceNowClient interfa
 }
 
 func createResourceOAuthEntity(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	entity, err := client.CreateOAuthEntity(resourceToOAuthEntity(data))
-	if err != nil {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	oauthEntity := resourceToOAuthEntity(data)
+	if err := snowClient.CreateObject(client.EndpointOAuthEntity, oauthEntity); err != nil {
 		return err
 	}
 
-	resourceFromOAuthEntity(data, entity)
+	resourceFromOAuthEntity(data, oauthEntity)
 
 	return readResourceOAuthEntity(data, serviceNowClient)
 }
 
 func updateResourceOAuthEntity(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	err := client.UpdateOAuthEntity(resourceToOAuthEntity(data))
-	if err != nil {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	if err := snowClient.UpdateObject(client.EndpointOAuthEntity, resourceToOAuthEntity(data)); err != nil {
 		return err
 	}
 
@@ -116,12 +115,12 @@ func updateResourceOAuthEntity(data *schema.ResourceData, serviceNowClient inter
 }
 
 func deleteResourceOAuthEntity(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	return client.DeleteOAuthEntity(data.Id())
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	return snowClient.DeleteObject(client.EndpointOAuthEntity, data.Id())
 }
 
 func resourceFromOAuthEntity(data *schema.ResourceData, oauthEntity *client.OAuthEntity) {
-	data.SetId(oauthEntity.Id)
+	data.SetId(oauthEntity.ID)
 	data.Set(oauthEntityName, oauthEntity.Name)
 	data.Set(oauthEntityClientUUID, oauthEntity.ClientUUID)
 	data.Set(oauthEntityClientID, oauthEntity.ClientID)
@@ -144,7 +143,7 @@ func resourceToOAuthEntity(data *schema.ResourceData) *client.OAuthEntity {
 		LogoURL:              data.Get(oauthEntityLogoURL).(string),
 		Access:               data.Get(oauthEntityAccess).(string),
 	}
-	oauthEntity.Id = data.Id()
+	oauthEntity.ID = data.Id()
 	oauthEntity.Scope = data.Get(commonScope).(string)
 	return &oauthEntity
 }

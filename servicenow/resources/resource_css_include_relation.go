@@ -5,28 +5,28 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
-const cssIncludeRelationDependencyId = "dependency_id"
-const cssIncludeRelationCssIncludeId = "css_include_id"
+const cssIncludeRelationDependencyID = "dependency_id"
+const cssIncludeRelationCSSIncludeID = "css_include_id"
 const cssIncludeRelationOrder = "order"
 
-// ResourceCssIncludeRelation is holding the info about the relation between a CSS Include and a widget dependency.
-func ResourceCssIncludeRelation() *schema.Resource {
+// ResourceCSSIncludeRelation is holding the info about the relation between a CSS Include and a widget dependency.
+func ResourceCSSIncludeRelation() *schema.Resource {
 	return &schema.Resource{
-		Create: createResourceCssIncludeRelation,
-		Read:   readResourceCssIncludeRelation,
-		Update: updateResourceCssIncludeRelation,
-		Delete: deleteResourceCssIncludeRelation,
+		Create: createResourceCSSIncludeRelation,
+		Read:   readResourceCSSIncludeRelation,
+		Update: updateResourceCSSIncludeRelation,
+		Delete: deleteResourceCSSIncludeRelation,
 
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
 
 		Schema: map[string]*schema.Schema{
-			cssIncludeRelationDependencyId: {
+			cssIncludeRelationDependencyID: {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			cssIncludeRelationCssIncludeId: {
+			cssIncludeRelationCSSIncludeID: {
 				Type:     schema.TypeString,
 				Required: true,
 			},
@@ -40,61 +40,60 @@ func ResourceCssIncludeRelation() *schema.Resource {
 	}
 }
 
-func readResourceCssIncludeRelation(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	cssIncludeRelation, err := client.GetCssIncludeRelation(data.Id())
-	if err != nil {
+func readResourceCSSIncludeRelation(data *schema.ResourceData, serviceNowClient interface{}) error {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	cssIncludeRelation := &client.CSSIncludeRelation{}
+	if err := snowClient.GetObject(client.EndpointCSSIncludeRelation, data.Id(), cssIncludeRelation); err != nil {
 		data.SetId("")
 		return err
 	}
 
-	resourceFromCssIncludeRelation(data, cssIncludeRelation)
+	resourceFromCSSIncludeRelation(data, cssIncludeRelation)
 
 	return nil
 }
 
-func createResourceCssIncludeRelation(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	createdPage, err := client.CreateCssIncludeRelation(resourceToCssIncludeRelation(data))
-	if err != nil {
+func createResourceCSSIncludeRelation(data *schema.ResourceData, serviceNowClient interface{}) error {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	cssIncludeRelation := resourceToCSSIncludeRelation(data)
+	if err := snowClient.CreateObject(client.EndpointCSSIncludeRelation, cssIncludeRelation); err != nil {
 		return err
 	}
 
-	resourceFromCssIncludeRelation(data, createdPage)
+	resourceFromCSSIncludeRelation(data, cssIncludeRelation)
 
-	return readResourceCssIncludeRelation(data, serviceNowClient)
+	return readResourceCSSIncludeRelation(data, serviceNowClient)
 }
 
-func updateResourceCssIncludeRelation(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	err := client.UpdateCssIncludeRelation(resourceToCssIncludeRelation(data))
-	if err != nil {
+func updateResourceCSSIncludeRelation(data *schema.ResourceData, serviceNowClient interface{}) error {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	if err := snowClient.UpdateObject(client.EndpointCSSIncludeRelation, resourceToCSSIncludeRelation(data)); err != nil {
 		return err
 	}
 
-	return readResourceCssIncludeRelation(data, serviceNowClient)
+	return readResourceCSSIncludeRelation(data, serviceNowClient)
 }
 
-func deleteResourceCssIncludeRelation(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	return client.DeleteCssIncludeRelation(data.Id())
+func deleteResourceCSSIncludeRelation(data *schema.ResourceData, serviceNowClient interface{}) error {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	return snowClient.DeleteObject(client.EndpointCSSIncludeRelation, data.Id())
 }
 
-func resourceFromCssIncludeRelation(data *schema.ResourceData, cssIncludeRelation *client.CssIncludeRelation) {
-	data.SetId(cssIncludeRelation.Id)
-	data.Set(cssIncludeRelationDependencyId, cssIncludeRelation.DependencyId)
-	data.Set(cssIncludeRelationCssIncludeId, cssIncludeRelation.CssIncludeId)
+func resourceFromCSSIncludeRelation(data *schema.ResourceData, cssIncludeRelation *client.CSSIncludeRelation) {
+	data.SetId(cssIncludeRelation.ID)
+	data.Set(cssIncludeRelationDependencyID, cssIncludeRelation.DependencyID)
+	data.Set(cssIncludeRelationCSSIncludeID, cssIncludeRelation.CSSIncludeID)
 	data.Set(cssIncludeRelationOrder, cssIncludeRelation.Order)
 	data.Set(commonScope, cssIncludeRelation.Scope)
 }
 
-func resourceToCssIncludeRelation(data *schema.ResourceData) *client.CssIncludeRelation {
-	cssIncludeRelation := client.CssIncludeRelation{
-		DependencyId: data.Get(cssIncludeRelationDependencyId).(string),
-		CssIncludeId: data.Get(cssIncludeRelationCssIncludeId).(string),
+func resourceToCSSIncludeRelation(data *schema.ResourceData) *client.CSSIncludeRelation {
+	cssIncludeRelation := client.CSSIncludeRelation{
+		DependencyID: data.Get(cssIncludeRelationDependencyID).(string),
+		CSSIncludeID: data.Get(cssIncludeRelationCSSIncludeID).(string),
 		Order:        data.Get(cssIncludeRelationOrder).(int),
 	}
-	cssIncludeRelation.Id = data.Id()
+	cssIncludeRelation.ID = data.Id()
 	cssIncludeRelation.Scope = data.Get(commonScope).(string)
 	return &cssIncludeRelation
 }

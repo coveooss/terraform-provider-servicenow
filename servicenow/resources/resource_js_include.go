@@ -7,8 +7,8 @@ import (
 
 const jsIncludeSource = "source"
 const jsIncludeDisplayName = "display_name"
-const jsIncludeUrl = "url"
-const jsIncludeUiScriptId = "ui_script_id"
+const jsIncludeURL = "url"
+const jsIncludeUIScriptID = "ui_script_id"
 
 // ResourceJsInclude is holding the info about a javascript script to be included.
 func ResourceJsInclude() *schema.Resource {
@@ -36,12 +36,12 @@ func ResourceJsInclude() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			jsIncludeUrl: {
+			jsIncludeURL: {
 				Type:     schema.TypeString,
 				Optional: true,
 				Default:  "",
 			},
-			jsIncludeUiScriptId: {
+			jsIncludeUIScriptID: {
 				Type:     schema.TypeString,
 				Optional: true,
 				Default:  "",
@@ -52,9 +52,9 @@ func ResourceJsInclude() *schema.Resource {
 }
 
 func readResourceJsInclude(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	jsInclude, err := client.GetJsInclude(data.Id())
-	if err != nil {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	jsInclude := &client.JsInclude{}
+	if err := snowClient.GetObject(client.EndpointJsInclude, data.Id(), jsInclude); err != nil {
 		data.SetId("")
 		return err
 	}
@@ -65,21 +65,20 @@ func readResourceJsInclude(data *schema.ResourceData, serviceNowClient interface
 }
 
 func createResourceJsInclude(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	createdPage, err := client.CreateJsInclude(resourceToJsInclude(data))
-	if err != nil {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	jsInclude := resourceToJsInclude(data)
+	if err := snowClient.CreateObject(client.EndpointJsInclude, jsInclude); err != nil {
 		return err
 	}
 
-	resourceFromJsInclude(data, createdPage)
+	resourceFromJsInclude(data, jsInclude)
 
 	return readResourceJsInclude(data, serviceNowClient)
 }
 
 func updateResourceJsInclude(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	err := client.UpdateJsInclude(resourceToJsInclude(data))
-	if err != nil {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	if err := snowClient.UpdateObject(client.EndpointJsInclude, resourceToJsInclude(data)); err != nil {
 		return err
 	}
 
@@ -87,16 +86,16 @@ func updateResourceJsInclude(data *schema.ResourceData, serviceNowClient interfa
 }
 
 func deleteResourceJsInclude(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	return client.DeleteJsInclude(data.Id())
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	return snowClient.DeleteObject(client.EndpointJsInclude, data.Id())
 }
 
 func resourceFromJsInclude(data *schema.ResourceData, jsInclude *client.JsInclude) {
-	data.SetId(jsInclude.Id)
+	data.SetId(jsInclude.ID)
 	data.Set(jsIncludeSource, jsInclude.Source)
 	data.Set(jsIncludeDisplayName, jsInclude.DisplayName)
-	data.Set(jsIncludeUrl, jsInclude.Url)
-	data.Set(jsIncludeUiScriptId, jsInclude.UiScriptId)
+	data.Set(jsIncludeURL, jsInclude.URL)
+	data.Set(jsIncludeUIScriptID, jsInclude.UIScriptID)
 	data.Set(commonScope, jsInclude.Scope)
 }
 
@@ -104,10 +103,10 @@ func resourceToJsInclude(data *schema.ResourceData) *client.JsInclude {
 	jsInclude := client.JsInclude{
 		Source:      data.Get(jsIncludeSource).(string),
 		DisplayName: data.Get(jsIncludeDisplayName).(string),
-		Url:         data.Get(jsIncludeUrl).(string),
-		UiScriptId:  data.Get(jsIncludeUiScriptId).(string),
+		URL:         data.Get(jsIncludeURL).(string),
+		UIScriptID:  data.Get(jsIncludeUIScriptID).(string),
 	}
-	jsInclude.Id = data.Id()
+	jsInclude.ID = data.Id()
 	jsInclude.Scope = data.Get(commonScope).(string)
 	return &jsInclude
 }

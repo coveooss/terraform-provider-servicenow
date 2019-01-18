@@ -56,9 +56,9 @@ func ResourceRestMessage() *schema.Resource {
 }
 
 func readResourceRestMessage(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	restMessage, err := client.GetRestMessage(data.Id())
-	if err != nil {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	restMessage := &client.RestMessage{}
+	if err := snowClient.GetObject(client.EndpointRestMessage, data.Id(), restMessage); err != nil {
 		data.SetId("")
 		return err
 	}
@@ -69,9 +69,9 @@ func readResourceRestMessage(data *schema.ResourceData, serviceNowClient interfa
 }
 
 func createResourceRestMessage(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	restMessage, err := client.CreateRestMessage(resourceToRestMessage(data))
-	if err != nil {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	restMessage := resourceToRestMessage(data)
+	if err := snowClient.CreateObject(client.EndpointRestMessage, restMessage); err != nil {
 		return err
 	}
 
@@ -81,9 +81,8 @@ func createResourceRestMessage(data *schema.ResourceData, serviceNowClient inter
 }
 
 func updateResourceRestMessage(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	err := client.UpdateRestMessage(resourceToRestMessage(data))
-	if err != nil {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	if err := snowClient.UpdateObject(client.EndpointRestMessage, resourceToRestMessage(data)); err != nil {
 		return err
 	}
 
@@ -91,12 +90,12 @@ func updateResourceRestMessage(data *schema.ResourceData, serviceNowClient inter
 }
 
 func deleteResourceRestMessage(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	return client.DeleteRestMessage(data.Id())
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	return snowClient.DeleteObject(client.EndpointRestMessage, data.Id())
 }
 
 func resourceFromRestMessage(data *schema.ResourceData, restMessage *client.RestMessage) {
-	data.SetId(restMessage.Id)
+	data.SetId(restMessage.ID)
 	data.Set(restMessageName, restMessage.Name)
 	data.Set(restMessageDescription, restMessage.Description)
 	data.Set(restMessageRestEndpoint, restMessage.RestEndpoint)
@@ -112,7 +111,7 @@ func resourceToRestMessage(data *schema.ResourceData) *client.RestMessage {
 		Access:             data.Get(restMessageAccess).(string),
 		AuthenticationType: "no_authentication",
 	}
-	restMessage.Id = data.Id()
+	restMessage.ID = data.Id()
 	restMessage.Scope = data.Get(commonScope).(string)
 	return &restMessage
 }

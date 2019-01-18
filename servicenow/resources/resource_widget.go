@@ -5,10 +5,10 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
-const widgetId = "identifier"
+const widgetID = "identifier"
 const widgetName = "name"
 const widgetTemplate = "template"
-const widgetCss = "css"
+const widgetCSS = "css"
 const widgetPublic = "public"
 const widgetRoles = "roles"
 const widgetLink = "link_function"
@@ -21,7 +21,7 @@ const widgetHasPreview = "has_preview"
 const widgetDataTable = "data_table"
 const widgetControllerAs = "controller_as"
 
-// Resource to manage a Widget in ServiceNow.
+// ResourceWidget manages a Widget in ServiceNow.
 func ResourceWidget() *schema.Resource {
 	return &schema.Resource{
 		Create: createResourceWidget,
@@ -34,7 +34,7 @@ func ResourceWidget() *schema.Resource {
 		},
 
 		Schema: map[string]*schema.Schema{
-			widgetId: {
+			widgetID: {
 				Type:     schema.TypeString,
 				Required: true,
 			},
@@ -46,7 +46,7 @@ func ResourceWidget() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			widgetCss: {
+			widgetCSS: {
 				Type:     schema.TypeString,
 				Optional: true,
 				Default:  "",
@@ -113,9 +113,9 @@ func ResourceWidget() *schema.Resource {
 }
 
 func readResourceWidget(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	widget, err := client.GetWidget(data.Id())
-	if err != nil {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	widget := &client.Widget{}
+	if err := snowClient.GetObject(client.EndpointWidget, data.Id(), widget); err != nil {
 		data.SetId("")
 		return err
 	}
@@ -126,21 +126,20 @@ func readResourceWidget(data *schema.ResourceData, serviceNowClient interface{})
 }
 
 func createResourceWidget(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	createdPage, err := client.CreateWidget(resourceToWidget(data))
-	if err != nil {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	widget := resourceToWidget(data)
+	if err := snowClient.CreateObject(client.EndpointWidget, widget); err != nil {
 		return err
 	}
 
-	resourceFromWidget(data, createdPage)
+	resourceFromWidget(data, widget)
 
 	return readResourceWidget(data, serviceNowClient)
 }
 
 func updateResourceWidget(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	err := client.UpdateWidget(resourceToWidget(data))
-	if err != nil {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	if err := snowClient.UpdateObject(client.EndpointWidget, resourceToWidget(data)); err != nil {
 		return err
 	}
 
@@ -148,16 +147,16 @@ func updateResourceWidget(data *schema.ResourceData, serviceNowClient interface{
 }
 
 func deleteResourceWidget(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	return client.DeleteWidget(data.Id())
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	return snowClient.DeleteObject(client.EndpointWidget, data.Id())
 }
 
 func resourceFromWidget(data *schema.ResourceData, widget *client.Widget) {
-	data.SetId(widget.Id)
-	data.Set(widgetId, widget.CustomId)
+	data.SetId(widget.ID)
+	data.Set(widgetID, widget.CustomID)
 	data.Set(widgetName, widget.Name)
 	data.Set(widgetTemplate, widget.Template)
-	data.Set(widgetCss, widget.Css)
+	data.Set(widgetCSS, widget.CSS)
 	data.Set(widgetPublic, widget.Public)
 	data.Set(widgetRoles, widget.Roles)
 	data.Set(widgetLink, widget.Link)
@@ -175,10 +174,10 @@ func resourceFromWidget(data *schema.ResourceData, widget *client.Widget) {
 
 func resourceToWidget(data *schema.ResourceData) *client.Widget {
 	widget := client.Widget{
-		CustomId:     data.Get(widgetId).(string),
+		CustomID:     data.Get(widgetID).(string),
 		Name:         data.Get(widgetName).(string),
 		Template:     data.Get(widgetTemplate).(string),
-		Css:          data.Get(widgetCss).(string),
+		CSS:          data.Get(widgetCSS).(string),
 		Public:       data.Get(widgetPublic).(bool),
 		Roles:        data.Get(widgetRoles).(string),
 		Link:         data.Get(widgetLink).(string),
@@ -191,7 +190,7 @@ func resourceToWidget(data *schema.ResourceData) *client.Widget {
 		DataTable:    data.Get(widgetDataTable).(string),
 		ControllerAs: data.Get(widgetControllerAs).(string),
 	}
-	widget.Id = data.Id()
+	widget.ID = data.Id()
 	widget.ProtectionPolicy = data.Get(commonProtectionPolicy).(string)
 	widget.Scope = data.Get(commonScope).(string)
 	return &widget

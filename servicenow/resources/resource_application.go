@@ -43,9 +43,9 @@ func ResourceApplication() *schema.Resource {
 }
 
 func readResourceApplication(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	application, err := client.GetApplication(data.Id())
-	if err != nil {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	application := &client.Application{}
+	if err := snowClient.GetObject(client.EndpointApplication, data.Id(), application); err != nil {
 		data.SetId("")
 		return err
 	}
@@ -56,21 +56,20 @@ func readResourceApplication(data *schema.ResourceData, serviceNowClient interfa
 }
 
 func createResourceApplication(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	createdApplication, err := client.CreateApplication(resourceToApplication(data))
-	if err != nil {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	application := resourceToApplication(data)
+	if err := snowClient.CreateObject(client.EndpointApplication, application); err != nil {
 		return err
 	}
 
-	resourceFromApplication(data, createdApplication)
+	resourceFromApplication(data, application)
 
 	return readResourceApplication(data, serviceNowClient)
 }
 
 func updateResourceApplication(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	err := client.UpdateApplication(resourceToApplication(data))
-	if err != nil {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	if err := snowClient.UpdateObject(client.EndpointApplication, resourceToApplication(data)); err != nil {
 		return err
 	}
 
@@ -78,12 +77,12 @@ func updateResourceApplication(data *schema.ResourceData, serviceNowClient inter
 }
 
 func deleteResourceApplication(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	return client.DeleteApplication(data.Id())
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	return snowClient.DeleteObject(client.EndpointApplication, data.Id())
 }
 
 func resourceFromApplication(data *schema.ResourceData, application *client.Application) {
-	data.SetId(application.Id)
+	data.SetId(application.ID)
 	data.Set(applicationName, application.Name)
 	data.Set(applicationScope, application.Scope)
 	data.Set(applicationVersion, application.Version)
@@ -95,6 +94,6 @@ func resourceToApplication(data *schema.ResourceData) *client.Application {
 		Scope:   data.Get(applicationScope).(string),
 		Version: data.Get(applicationVersion).(string),
 	}
-	application.Id = data.Id()
+	application.ID = data.Id()
 	return &application
 }

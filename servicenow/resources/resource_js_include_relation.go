@@ -5,8 +5,8 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
-const jsIncludeRelationDependencyId = "dependency_id"
-const jsIncludeRelationJsIncludeId = "js_include_id"
+const jsIncludeRelationDependencyID = "dependency_id"
+const jsIncludeRelationJsIncludeID = "js_include_id"
 const jsIncludeRelationOrder = "order"
 
 // ResourceJsIncludeRelation is holding the info about the relation between a js include and a widget dependency.
@@ -22,11 +22,11 @@ func ResourceJsIncludeRelation() *schema.Resource {
 		},
 
 		Schema: map[string]*schema.Schema{
-			jsIncludeRelationDependencyId: {
+			jsIncludeRelationDependencyID: {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			jsIncludeRelationJsIncludeId: {
+			jsIncludeRelationJsIncludeID: {
 				Type:     schema.TypeString,
 				Required: true,
 			},
@@ -41,9 +41,9 @@ func ResourceJsIncludeRelation() *schema.Resource {
 }
 
 func readResourceJsIncludeRelation(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	jsIncludeRelation, err := client.GetJsIncludeRelation(data.Id())
-	if err != nil {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	jsIncludeRelation := &client.JsIncludeRelation{}
+	if err := snowClient.GetObject(client.EndpointJsIncludeRelation, data.Id(), jsIncludeRelation); err != nil {
 		data.SetId("")
 		return err
 	}
@@ -54,21 +54,20 @@ func readResourceJsIncludeRelation(data *schema.ResourceData, serviceNowClient i
 }
 
 func createResourceJsIncludeRelation(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	createdPage, err := client.CreateJsIncludeRelation(resourceToJsIncludeRelation(data))
-	if err != nil {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	jsIncludeRelation := resourceToJsIncludeRelation(data)
+	if err := snowClient.CreateObject(client.EndpointJsIncludeRelation, jsIncludeRelation); err != nil {
 		return err
 	}
 
-	resourceFromJsIncludeRelation(data, createdPage)
+	resourceFromJsIncludeRelation(data, jsIncludeRelation)
 
 	return readResourceJsIncludeRelation(data, serviceNowClient)
 }
 
 func updateResourceJsIncludeRelation(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	err := client.UpdateJsIncludeRelation(resourceToJsIncludeRelation(data))
-	if err != nil {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	if err := snowClient.UpdateObject(client.EndpointJsIncludeRelation, resourceToJsIncludeRelation(data)); err != nil {
 		return err
 	}
 
@@ -76,25 +75,25 @@ func updateResourceJsIncludeRelation(data *schema.ResourceData, serviceNowClient
 }
 
 func deleteResourceJsIncludeRelation(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	return client.DeleteJsIncludeRelation(data.Id())
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	return snowClient.DeleteObject(client.EndpointJsIncludeRelation, data.Id())
 }
 
 func resourceFromJsIncludeRelation(data *schema.ResourceData, jsIncludeRelation *client.JsIncludeRelation) {
-	data.SetId(jsIncludeRelation.Id)
-	data.Set(jsIncludeRelationDependencyId, jsIncludeRelation.DependencyId)
-	data.Set(jsIncludeRelationJsIncludeId, jsIncludeRelation.JsIncludeId)
+	data.SetId(jsIncludeRelation.ID)
+	data.Set(jsIncludeRelationDependencyID, jsIncludeRelation.DependencyID)
+	data.Set(jsIncludeRelationJsIncludeID, jsIncludeRelation.JsIncludeID)
 	data.Set(jsIncludeRelationOrder, jsIncludeRelation.Order)
 	data.Set(commonScope, jsIncludeRelation.Scope)
 }
 
 func resourceToJsIncludeRelation(data *schema.ResourceData) *client.JsIncludeRelation {
 	jsIncludeRelation := client.JsIncludeRelation{
-		DependencyId: data.Get(jsIncludeRelationDependencyId).(string),
-		JsIncludeId:  data.Get(jsIncludeRelationJsIncludeId).(string),
+		DependencyID: data.Get(jsIncludeRelationDependencyID).(string),
+		JsIncludeID:  data.Get(jsIncludeRelationJsIncludeID).(string),
 		Order:        data.Get(jsIncludeRelationOrder).(int),
 	}
-	jsIncludeRelation.Id = data.Id()
+	jsIncludeRelation.ID = data.Id()
 	jsIncludeRelation.Scope = data.Get(commonScope).(string)
 	return &jsIncludeRelation
 }

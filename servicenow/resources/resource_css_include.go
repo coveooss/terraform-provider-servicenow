@@ -7,16 +7,16 @@ import (
 
 const cssIncludeSource = "source"
 const cssIncludeName = "name"
-const cssIncludeUrl = "url"
-const cssIncludeCssId = "css_id"
+const cssIncludeURL = "url"
+const cssIncludeStyleSheetID = "style_sheet_id"
 
-// ResourceCssInclude is holding the info about a javascript script to be included.
-func ResourceCssInclude() *schema.Resource {
+// ResourceCSSInclude is holding the info about a javascript script to be included.
+func ResourceCSSInclude() *schema.Resource {
 	return &schema.Resource{
-		Create: createResourceCssInclude,
-		Read:   readResourceCssInclude,
-		Update: updateResourceCssInclude,
-		Delete: deleteResourceCssInclude,
+		Create: createResourceCSSInclude,
+		Read:   readResourceCSSInclude,
+		Update: updateResourceCSSInclude,
+		Delete: deleteResourceCSSInclude,
 
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
@@ -36,78 +36,78 @@ func ResourceCssInclude() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			cssIncludeUrl: {
+			cssIncludeURL: {
 				Type:     schema.TypeString,
 				Optional: true,
 				Default:  "",
 			},
-			cssIncludeCssId: {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "",
+			cssIncludeStyleSheetID: {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Default:     "",
+				Description: "The ID of the service portal style sheet to include.",
 			},
 			commonScope: getScopeSchema(),
 		},
 	}
 }
 
-func readResourceCssInclude(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	cssInclude, err := client.GetCssInclude(data.Id())
-	if err != nil {
+func readResourceCSSInclude(data *schema.ResourceData, serviceNowClient interface{}) error {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	cssInclude := &client.CSSInclude{}
+	if err := snowClient.GetObject(client.EndpointCSSInclude, data.Id(), cssInclude); err != nil {
 		data.SetId("")
 		return err
 	}
 
-	resourceFromCssInclude(data, cssInclude)
+	resourceFromCSSInclude(data, cssInclude)
 
 	return nil
 }
 
-func createResourceCssInclude(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	createdPage, err := client.CreateCssInclude(resourceToCssInclude(data))
-	if err != nil {
+func createResourceCSSInclude(data *schema.ResourceData, serviceNowClient interface{}) error {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	cssInclude := resourceToCSSInclude(data)
+	if err := snowClient.CreateObject(client.EndpointCSSInclude, cssInclude); err != nil {
 		return err
 	}
 
-	resourceFromCssInclude(data, createdPage)
+	resourceFromCSSInclude(data, cssInclude)
 
-	return readResourceCssInclude(data, serviceNowClient)
+	return readResourceCSSInclude(data, serviceNowClient)
 }
 
-func updateResourceCssInclude(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	err := client.UpdateCssInclude(resourceToCssInclude(data))
-	if err != nil {
+func updateResourceCSSInclude(data *schema.ResourceData, serviceNowClient interface{}) error {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	if err := snowClient.UpdateObject(client.EndpointCSSInclude, resourceToCSSInclude(data)); err != nil {
 		return err
 	}
 
-	return readResourceCssInclude(data, serviceNowClient)
+	return readResourceCSSInclude(data, serviceNowClient)
 }
 
-func deleteResourceCssInclude(data *schema.ResourceData, serviceNowClient interface{}) error {
-	client := serviceNowClient.(*client.ServiceNowClient)
-	return client.DeleteCssInclude(data.Id())
+func deleteResourceCSSInclude(data *schema.ResourceData, serviceNowClient interface{}) error {
+	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	return snowClient.DeleteObject(client.EndpointCSSInclude, data.Id())
 }
 
-func resourceFromCssInclude(data *schema.ResourceData, cssInclude *client.CssInclude) {
-	data.SetId(cssInclude.Id)
+func resourceFromCSSInclude(data *schema.ResourceData, cssInclude *client.CSSInclude) {
+	data.SetId(cssInclude.ID)
 	data.Set(cssIncludeSource, cssInclude.Source)
 	data.Set(cssIncludeName, cssInclude.Name)
-	data.Set(cssIncludeUrl, cssInclude.Url)
-	data.Set(cssIncludeCssId, cssInclude.CssId)
+	data.Set(cssIncludeURL, cssInclude.URL)
+	data.Set(cssIncludeStyleSheetID, cssInclude.StyleSheetID)
 	data.Set(commonScope, cssInclude.Scope)
 }
 
-func resourceToCssInclude(data *schema.ResourceData) *client.CssInclude {
-	cssInclude := client.CssInclude{
-		Source: data.Get(cssIncludeSource).(string),
-		Name:   data.Get(cssIncludeName).(string),
-		Url:    data.Get(cssIncludeUrl).(string),
-		CssId:  data.Get(cssIncludeCssId).(string),
+func resourceToCSSInclude(data *schema.ResourceData) *client.CSSInclude {
+	cssInclude := client.CSSInclude{
+		Source:       data.Get(cssIncludeSource).(string),
+		Name:         data.Get(cssIncludeName).(string),
+		URL:          data.Get(cssIncludeURL).(string),
+		StyleSheetID: data.Get(cssIncludeStyleSheetID).(string),
 	}
-	cssInclude.Id = data.Id()
+	cssInclude.ID = data.Id()
 	cssInclude.Scope = data.Get(commonScope).(string)
 	return &cssInclude
 }
