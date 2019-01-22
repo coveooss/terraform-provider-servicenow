@@ -135,9 +135,7 @@ func resourceFromOAuthEntity(data *schema.ResourceData, oauthEntity *client.OAut
 func resourceToOAuthEntity(data *schema.ResourceData) *client.OAuthEntity {
 	oauthEntity := client.OAuthEntity{
 		Name:                 data.Get(oauthEntityName).(string),
-		ClientUUID:           data.Get(oauthEntityClientID).(string),
-		ClientID:             data.Get(oauthEntityClientID).(string),
-		AccessTokenLifespan:  data.Get(oauthEntityAccess).(int),
+		AccessTokenLifespan:  data.Get(oauthEntityAccessTokenLifespan).(int),
 		RefreshTokenLifespan: data.Get(oauthEntityRefreshTokenLifespan).(int),
 		RedirectURL:          data.Get(oauthEntityRedirectURL).(string),
 		LogoURL:              data.Get(oauthEntityLogoURL).(string),
