@@ -7,8 +7,8 @@ const EndpointOAuthEntity = "oauth_entity.do"
 type OAuthEntity struct {
 	BaseResult
 	Name                 string `json:"name"`
-	ClientUUID           string `json:"client_uuid"`
-	ClientID             string `json:"client_id"`
+	ClientUUID           string `json:"client_uuid,omitempty"`
+	ClientID             string `json:"client_id,omitempty"`
 	AccessTokenLifespan  int    `json:"access_token_lifespan,string"`
 	RefreshTokenLifespan int    `json:"refresh_token_lifespan,string"`
 	RedirectURL          string `json:"redirect_url"`
