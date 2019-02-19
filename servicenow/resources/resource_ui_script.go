@@ -12,7 +12,7 @@ const uiScriptActive = "active"
 const uiScriptUIType = "type"
 const uiScriptAPIName = "api_name"
 
-// ResourceUIScript manages a UI Page in ServiceNow.
+// ResourceUIScript manages a UI Script in ServiceNow which can be added to any other UI component.
 func ResourceUIScript() *schema.Resource {
 	return &schema.Resource{
 		Create: createResourceUIScript,

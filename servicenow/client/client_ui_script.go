@@ -1,9 +1,9 @@
 package client
 
-// EndpointUIScript is the endpoint to manage UI Macro records.
+// EndpointUIScript is the endpoint to manage UI Script records.
 const EndpointUIScript = "sys_ui_script.do"
 
-// UIScript is the json response for a UI Macro in ServiceNow.
+// UIScript is the json response for a UI Script in ServiceNow.
 type UIScript struct {
 	BaseResult
 	Name        string `json:"script_name"`
