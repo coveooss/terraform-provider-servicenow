@@ -49,6 +49,7 @@ func Provider() *schema.Provider {
 			"servicenow_system_property_relation":   resources.ResourceSystemPropertyRelation(),
 			"servicenow_ui_macro":                   resources.ResourceUIMacro(),
 			"servicenow_ui_page":                    resources.ResourceUIPage(),
+			"servicenow_ui_script":                  resources.ResourceUIScript(),
 			"servicenow_widget":                     resources.ResourceWidget(),
 			"servicenow_widget_dependency":          resources.ResourceWidgetDependency(),
 			"servicenow_widget_dependency_relation": resources.ResourceWidgetDependencyRelation(),
