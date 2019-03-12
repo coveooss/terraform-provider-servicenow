@@ -55,7 +55,7 @@ func ResourceContentCSS() *schema.Resource {
 }
 
 func readResourceContentCSS(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	contentCSS := &client.ContentCSS{}
 	if err := snowClient.GetObject(client.EndpointContentCSS, data.Id(), contentCSS); err != nil {
 		data.SetId("")
@@ -68,7 +68,7 @@ func readResourceContentCSS(data *schema.ResourceData, serviceNowClient interfac
 }
 
 func createResourceContentCSS(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	contentCSS := resourceToContentCSS(data)
 	if err := snowClient.CreateObject(client.EndpointContentCSS, contentCSS); err != nil {
 		return err
@@ -80,7 +80,7 @@ func createResourceContentCSS(data *schema.ResourceData, serviceNowClient interf
 }
 
 func updateResourceContentCSS(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	if err := snowClient.UpdateObject(client.EndpointContentCSS, resourceToContentCSS(data)); err != nil {
 		return err
 	}
@@ -89,7 +89,7 @@ func updateResourceContentCSS(data *schema.ResourceData, serviceNowClient interf
 }
 
 func deleteResourceContentCSS(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	return snowClient.DeleteObject(client.EndpointContentCSS, data.Id())
 }
 

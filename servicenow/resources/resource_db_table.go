@@ -110,7 +110,7 @@ func ResourceDBTable() *schema.Resource {
 }
 
 func readResourceDBTable(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	dbTable := &client.DBTable{}
 	if err := snowClient.GetObject(client.EndpointDBTable, data.Id(), dbTable); err != nil {
 		data.SetId("")
@@ -123,7 +123,7 @@ func readResourceDBTable(data *schema.ResourceData, serviceNowClient interface{}
 }
 
 func createResourceDBTable(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	dbTable := resourceToDBTable(data)
 	if err := snowClient.CreateObject(client.EndpointDBTable, dbTable); err != nil {
 		return err
@@ -135,7 +135,7 @@ func createResourceDBTable(data *schema.ResourceData, serviceNowClient interface
 }
 
 func updateResourceDBTable(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	if err := snowClient.UpdateObject(client.EndpointDBTable, resourceToDBTable(data)); err != nil {
 		return err
 	}
@@ -144,7 +144,7 @@ func updateResourceDBTable(data *schema.ResourceData, serviceNowClient interface
 }
 
 func deleteResourceDBTable(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	return snowClient.DeleteObject(client.EndpointDBTable, data.Id())
 }
 

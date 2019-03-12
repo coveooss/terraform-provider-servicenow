@@ -56,7 +56,7 @@ func ResourceRestMessage() *schema.Resource {
 }
 
 func readResourceRestMessage(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	restMessage := &client.RestMessage{}
 	if err := snowClient.GetObject(client.EndpointRestMessage, data.Id(), restMessage); err != nil {
 		data.SetId("")
@@ -69,7 +69,7 @@ func readResourceRestMessage(data *schema.ResourceData, serviceNowClient interfa
 }
 
 func createResourceRestMessage(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	restMessage := resourceToRestMessage(data)
 	if err := snowClient.CreateObject(client.EndpointRestMessage, restMessage); err != nil {
 		return err
@@ -81,7 +81,7 @@ func createResourceRestMessage(data *schema.ResourceData, serviceNowClient inter
 }
 
 func updateResourceRestMessage(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	if err := snowClient.UpdateObject(client.EndpointRestMessage, resourceToRestMessage(data)); err != nil {
 		return err
 	}
@@ -90,7 +90,7 @@ func updateResourceRestMessage(data *schema.ResourceData, serviceNowClient inter
 }
 
 func deleteResourceRestMessage(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	return snowClient.DeleteObject(client.EndpointRestMessage, data.Id())
 }
 

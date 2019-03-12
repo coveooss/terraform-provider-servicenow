@@ -18,7 +18,7 @@ func DataSourceRole() *schema.Resource {
 }
 
 func readDataSourceRole(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	role := &client.Role{}
 	if err := snowClient.GetObjectByName(client.EndpointRole, data.Get(roleName).(string), role); err != nil {
 		data.SetId("")

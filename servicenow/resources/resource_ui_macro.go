@@ -58,7 +58,7 @@ func ResourceUIMacro() *schema.Resource {
 }
 
 func readResourceUIMacro(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	uiMacro := &client.UIMacro{}
 	if err := snowClient.GetObject(client.EndpointUIMacro, data.Id(), uiMacro); err != nil {
 		data.SetId("")
@@ -71,7 +71,7 @@ func readResourceUIMacro(data *schema.ResourceData, serviceNowClient interface{}
 }
 
 func createResourceUIMacro(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	uiMacro := resourceToUIMacro(data)
 	if err := snowClient.CreateObject(client.EndpointUIMacro, uiMacro); err != nil {
 		return err
@@ -83,7 +83,7 @@ func createResourceUIMacro(data *schema.ResourceData, serviceNowClient interface
 }
 
 func updateResourceUIMacro(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	if err := snowClient.UpdateObject(client.EndpointUIMacro, resourceToUIMacro(data)); err != nil {
 		return err
 	}
@@ -92,7 +92,7 @@ func updateResourceUIMacro(data *schema.ResourceData, serviceNowClient interface
 }
 
 func deleteResourceUIMacro(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	return snowClient.DeleteObject(client.EndpointUIMacro, data.Id())
 }
 

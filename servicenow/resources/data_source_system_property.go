@@ -18,7 +18,7 @@ func DataSourceSystemProperty() *schema.Resource {
 }
 
 func readDataSourceSystemProperty(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	systemProperty := &client.SystemProperty{}
 	if err := snowClient.GetObjectByName(client.EndpointSystemProperty, data.Get(systemPropertyName).(string), systemProperty); err != nil {
 		data.SetId("")

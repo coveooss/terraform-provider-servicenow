@@ -43,7 +43,7 @@ func ResourceApplication() *schema.Resource {
 }
 
 func readResourceApplication(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	application := &client.Application{}
 	if err := snowClient.GetObject(client.EndpointApplication, data.Id(), application); err != nil {
 		data.SetId("")
@@ -56,7 +56,7 @@ func readResourceApplication(data *schema.ResourceData, serviceNowClient interfa
 }
 
 func createResourceApplication(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	application := resourceToApplication(data)
 	if err := snowClient.CreateObject(client.EndpointApplication, application); err != nil {
 		return err
@@ -68,7 +68,7 @@ func createResourceApplication(data *schema.ResourceData, serviceNowClient inter
 }
 
 func updateResourceApplication(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	if err := snowClient.UpdateObject(client.EndpointApplication, resourceToApplication(data)); err != nil {
 		return err
 	}
@@ -77,7 +77,7 @@ func updateResourceApplication(data *schema.ResourceData, serviceNowClient inter
 }
 
 func deleteResourceApplication(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	return snowClient.DeleteObject(client.EndpointApplication, data.Id())
 }
 

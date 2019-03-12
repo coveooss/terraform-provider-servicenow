@@ -69,7 +69,7 @@ func ResourceUIPage() *schema.Resource {
 }
 
 func readResourceUIPage(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	uiPage := &client.UIPage{}
 	if err := snowClient.GetObject(client.EndpointUIPage, data.Id(), uiPage); err != nil {
 		data.SetId("")
@@ -82,7 +82,7 @@ func readResourceUIPage(data *schema.ResourceData, serviceNowClient interface{})
 }
 
 func createResourceUIPage(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	uiPage := resourceToUIPage(data)
 	if err := snowClient.CreateObject(client.EndpointUIPage, uiPage); err != nil {
 		return err
@@ -94,7 +94,7 @@ func createResourceUIPage(data *schema.ResourceData, serviceNowClient interface{
 }
 
 func updateResourceUIPage(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	if err := snowClient.UpdateObject(client.EndpointUIPage, resourceToUIPage(data)); err != nil {
 		return err
 	}
@@ -103,7 +103,7 @@ func updateResourceUIPage(data *schema.ResourceData, serviceNowClient interface{
 }
 
 func deleteResourceUIPage(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	return snowClient.DeleteObject(client.EndpointUIPage, data.Id())
 }
 

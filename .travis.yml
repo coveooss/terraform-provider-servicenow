@@ -5,10 +5,16 @@ go:
 sudo: false
 
 install:
+- go get github.com/stretchr/testify/assert
+- go get github.com/stretchr/testify/mock
 - go get ./...
+- go get golang.org/x/tools/cmd/cover
+- go get github.com/mattn/goveralls
 
 script:
 - make test
+- go test ./... -covermode=count -coverprofile=coverage.out
+- $HOME/gopath/bin/goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN
 
 after_success:
   - test ${TRAVIS_TAG:0:1} = v && curl -sL https://git.io/goreleaser | bash

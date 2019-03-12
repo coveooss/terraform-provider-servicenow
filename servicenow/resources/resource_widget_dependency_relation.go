@@ -35,7 +35,7 @@ func ResourceWidgetDependencyRelation() *schema.Resource {
 }
 
 func readResourceWidgetDepRelation(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	relation := &client.WidgetDependencyRelation{}
 	if err := snowClient.GetObject(client.EndpointWidgetDependencyRelation, data.Id(), relation); err != nil {
 		data.SetId("")
@@ -48,7 +48,7 @@ func readResourceWidgetDepRelation(data *schema.ResourceData, serviceNowClient i
 }
 
 func createResourceWidgetDepRelation(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	relation := resourceToWidgetDepRelation(data)
 	if err := snowClient.CreateObject(client.EndpointWidgetDependencyRelation, relation); err != nil {
 		return err
@@ -60,7 +60,7 @@ func createResourceWidgetDepRelation(data *schema.ResourceData, serviceNowClient
 }
 
 func updateResourceWidgetDepRelation(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	if err := snowClient.UpdateObject(client.EndpointWidgetDependencyRelation, resourceToWidgetDepRelation(data)); err != nil {
 		return err
 	}
@@ -69,7 +69,7 @@ func updateResourceWidgetDepRelation(data *schema.ResourceData, serviceNowClient
 }
 
 func deleteResourceWidgetDepRelation(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	return snowClient.DeleteObject(client.EndpointWidgetDependencyRelation, data.Id())
 }
 

@@ -62,7 +62,7 @@ func ResourceUIScript() *schema.Resource {
 }
 
 func readResourceUIScript(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	uiScript := &client.UIScript{}
 	if err := snowClient.GetObject(client.EndpointUIScript, data.Id(), uiScript); err != nil {
 		data.SetId("")
@@ -75,7 +75,7 @@ func readResourceUIScript(data *schema.ResourceData, serviceNowClient interface{
 }
 
 func createResourceUIScript(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	uiScript := resourceToUIScript(data)
 	if err := snowClient.CreateObject(client.EndpointUIScript, uiScript); err != nil {
 		return err
@@ -87,7 +87,7 @@ func createResourceUIScript(data *schema.ResourceData, serviceNowClient interfac
 }
 
 func updateResourceUIScript(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	if err := snowClient.UpdateObject(client.EndpointUIScript, resourceToUIScript(data)); err != nil {
 		return err
 	}
@@ -96,7 +96,7 @@ func updateResourceUIScript(data *schema.ResourceData, serviceNowClient interfac
 }
 
 func deleteResourceUIScript(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	return snowClient.DeleteObject(client.EndpointUIScript, data.Id())
 }
 

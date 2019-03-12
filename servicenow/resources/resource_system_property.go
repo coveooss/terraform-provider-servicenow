@@ -90,7 +90,7 @@ func ResourceSystemProperty() *schema.Resource {
 }
 
 func readResourceSystemProperty(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	systemProperty := &client.SystemProperty{}
 	if err := snowClient.GetObject(client.EndpointSystemProperty, data.Id(), systemProperty); err != nil {
 		data.SetId("")
@@ -103,7 +103,7 @@ func readResourceSystemProperty(data *schema.ResourceData, serviceNowClient inte
 }
 
 func createResourceSystemProperty(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	systemProperty := resourceToSystemProperty(data)
 	if err := snowClient.CreateObject(client.EndpointSystemProperty, systemProperty); err != nil {
 		return err
@@ -115,7 +115,7 @@ func createResourceSystemProperty(data *schema.ResourceData, serviceNowClient in
 }
 
 func updateResourceSystemProperty(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	if err := snowClient.UpdateObject(client.EndpointSystemProperty, resourceToSystemProperty(data)); err != nil {
 		return err
 	}
@@ -124,7 +124,7 @@ func updateResourceSystemProperty(data *schema.ResourceData, serviceNowClient in
 }
 
 func deleteResourceSystemProperty(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	return snowClient.DeleteObject(client.EndpointSystemProperty, data.Id())
 }
 

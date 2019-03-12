@@ -18,7 +18,7 @@ func DataSourceDBTable() *schema.Resource {
 }
 
 func readDataSourceDBTable(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	dbTable := &client.DBTable{}
 	if err := snowClient.GetObjectByName(client.EndpointDBTable, data.Get(dbTableName).(string), dbTable); err != nil {
 		data.SetId("")

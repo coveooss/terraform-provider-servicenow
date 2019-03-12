@@ -10,10 +10,19 @@ import (
 	"net/url"
 )
 
-// ServiceNowClient is the client used to interact with ServiceNow API.
-type ServiceNowClient struct {
+// Client is the client used to interact with ServiceNow API.
+type Client struct {
 	BaseURL string
 	Auth    string
+}
+
+// ServiceNowClient defines possible methods to call on the ServiceNowClient.
+type ServiceNowClient interface {
+	GetObject(string, string, Record) error
+	GetObjectByName(string, string, Record) error
+	CreateObject(string, Record) error
+	UpdateObject(string, Record) error
+	DeleteObject(string, string) error
 }
 
 // BaseResult is representing the default properties of all results.
@@ -45,10 +54,10 @@ type ErrorDetail struct {
 }
 
 // NewClient is a factory method used to return a new ServiceNowClient.
-func NewClient(baseURL string, username string, password string) *ServiceNowClient {
+func NewClient(baseURL string, username string, password string) *Client {
 	// Concatenate username + password to create a basic authorization header.
 	credentials := username + ":" + password
-	return &ServiceNowClient{
+	return &Client{
 		BaseURL: baseURL,
 		Auth:    "Basic " + base64.StdEncoding.EncodeToString([]byte(credentials)),
 	}
@@ -87,7 +96,7 @@ func validateOnlyOneResultReceived(results BaseResultList) error {
 // GetObject retrieves an object via a specific endpoint with a GET method and a specified
 // sys_id. The response is parsed and fills the object in parameters. responseObjectOut
 // parameter must be a pointer.
-func (client *ServiceNowClient) GetObject(endpoint string, id string, responseObjectOut Record) error {
+func (client *Client) GetObject(endpoint string, id string, responseObjectOut Record) error {
 	jsonResponse, err := client.requestJSON("GET", endpoint+"?JSONv2&sysparm_query=sys_id="+id, nil)
 	if err != nil {
 		return err
@@ -96,7 +105,7 @@ func (client *ServiceNowClient) GetObject(endpoint string, id string, responseOb
 }
 
 // GetObjectByName retrieves an object via its name attribute.
-func (client *ServiceNowClient) GetObjectByName(endpoint string, name string, responseObjectOut Record) error {
+func (client *Client) GetObjectByName(endpoint string, name string, responseObjectOut Record) error {
 	jsonResponse, err := client.requestJSON("GET", endpoint+"?JSONv2&sysparm_query=name="+url.QueryEscape(name), nil)
 	if err != nil {
 		return err
@@ -106,7 +115,7 @@ func (client *ServiceNowClient) GetObjectByName(endpoint string, name string, re
 
 // CreateObject creates a new object in ServiceNow, validates the response and fills the object
 // with properties received from the service.
-func (client *ServiceNowClient) CreateObject(endpoint string, objectToCreate Record) error {
+func (client *Client) CreateObject(endpoint string, objectToCreate Record) error {
 	url := endpoint + "?JSONv2&sysparm_action=insert"
 	if objectToCreate.GetScope() != "" {
 		url += "&sysparm_record_scope=" + objectToCreate.GetScope()
@@ -122,19 +131,19 @@ func (client *ServiceNowClient) CreateObject(endpoint string, objectToCreate Rec
 }
 
 // UpdateObject updates an object using a specific endpoint, sys_id and object data.
-func (client *ServiceNowClient) UpdateObject(endpoint string, object Record) error {
+func (client *Client) UpdateObject(endpoint string, object Record) error {
 	_, err := client.requestJSON("POST", endpoint+"?JSONv2&sysparm_action=update&sysparm_query=sys_id="+object.GetID(), object)
 	return err
 }
 
 // DeleteObject deletes an object using a specific endpoing and sys_id.
-func (client *ServiceNowClient) DeleteObject(endpoint string, id string) error {
+func (client *Client) DeleteObject(endpoint string, id string) error {
 	_, err := client.requestJSON("POST", endpoint+"?JSONv2&sysparm_action=deleteRecord&sysparm_sys_id="+id, nil)
 	return err
 }
 
 // requestJSON execute an HTTP request and returns the raw response data.
-func (client *ServiceNowClient) requestJSON(method string, path string, jsonData interface{}) ([]byte, error) {
+func (client *Client) requestJSON(method string, path string, jsonData interface{}) ([]byte, error) {
 	var data *bytes.Buffer
 
 	if jsonData != nil {

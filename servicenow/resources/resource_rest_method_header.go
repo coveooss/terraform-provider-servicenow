@@ -43,7 +43,7 @@ func ResourceRestMethodHeader() *schema.Resource {
 }
 
 func readResourceRestMethodHeader(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	restMethodHeader := &client.RestMethodHeader{}
 	if err := snowClient.GetObject(client.EndpointRestMethodHeader, data.Id(), restMethodHeader); err != nil {
 		data.SetId("")
@@ -56,7 +56,7 @@ func readResourceRestMethodHeader(data *schema.ResourceData, serviceNowClient in
 }
 
 func createResourceRestMethodHeader(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	restMethodHeader := resourceToRestMethodHeader(data)
 	if err := snowClient.CreateObject(client.EndpointRestMethodHeader, restMethodHeader); err != nil {
 		return err
@@ -68,7 +68,7 @@ func createResourceRestMethodHeader(data *schema.ResourceData, serviceNowClient 
 }
 
 func updateResourceRestMethodHeader(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	if err := snowClient.UpdateObject(client.EndpointRestMethodHeader, resourceToRestMethodHeader(data)); err != nil {
 		return err
 	}
@@ -77,7 +77,7 @@ func updateResourceRestMethodHeader(data *schema.ResourceData, serviceNowClient 
 }
 
 func deleteResourceRestMethodHeader(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	return snowClient.DeleteObject(client.EndpointRestMethodHeader, data.Id())
 }
 

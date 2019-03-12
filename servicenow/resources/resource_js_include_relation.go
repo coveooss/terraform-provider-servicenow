@@ -41,7 +41,7 @@ func ResourceJsIncludeRelation() *schema.Resource {
 }
 
 func readResourceJsIncludeRelation(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	jsIncludeRelation := &client.JsIncludeRelation{}
 	if err := snowClient.GetObject(client.EndpointJsIncludeRelation, data.Id(), jsIncludeRelation); err != nil {
 		data.SetId("")
@@ -54,7 +54,7 @@ func readResourceJsIncludeRelation(data *schema.ResourceData, serviceNowClient i
 }
 
 func createResourceJsIncludeRelation(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	jsIncludeRelation := resourceToJsIncludeRelation(data)
 	if err := snowClient.CreateObject(client.EndpointJsIncludeRelation, jsIncludeRelation); err != nil {
 		return err
@@ -66,7 +66,7 @@ func createResourceJsIncludeRelation(data *schema.ResourceData, serviceNowClient
 }
 
 func updateResourceJsIncludeRelation(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	if err := snowClient.UpdateObject(client.EndpointJsIncludeRelation, resourceToJsIncludeRelation(data)); err != nil {
 		return err
 	}
@@ -75,7 +75,7 @@ func updateResourceJsIncludeRelation(data *schema.ResourceData, serviceNowClient
 }
 
 func deleteResourceJsIncludeRelation(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	return snowClient.DeleteObject(client.EndpointJsIncludeRelation, data.Id())
 }
 

@@ -81,7 +81,7 @@ func ResourceOAuthEntity() *schema.Resource {
 }
 
 func readResourceOAuthEntity(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	oauthEntity := &client.OAuthEntity{}
 	if err := snowClient.GetObject(client.EndpointOAuthEntity, data.Id(), oauthEntity); err != nil {
 		data.SetId("")
@@ -94,7 +94,7 @@ func readResourceOAuthEntity(data *schema.ResourceData, serviceNowClient interfa
 }
 
 func createResourceOAuthEntity(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	oauthEntity := resourceToOAuthEntity(data)
 	if err := snowClient.CreateObject(client.EndpointOAuthEntity, oauthEntity); err != nil {
 		return err
@@ -106,7 +106,7 @@ func createResourceOAuthEntity(data *schema.ResourceData, serviceNowClient inter
 }
 
 func updateResourceOAuthEntity(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	if err := snowClient.UpdateObject(client.EndpointOAuthEntity, resourceToOAuthEntity(data)); err != nil {
 		return err
 	}
@@ -115,7 +115,7 @@ func updateResourceOAuthEntity(data *schema.ResourceData, serviceNowClient inter
 }
 
 func deleteResourceOAuthEntity(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	return snowClient.DeleteObject(client.EndpointOAuthEntity, data.Id())
 }
 

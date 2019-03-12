@@ -41,7 +41,7 @@ func ResourceCSSIncludeRelation() *schema.Resource {
 }
 
 func readResourceCSSIncludeRelation(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	cssIncludeRelation := &client.CSSIncludeRelation{}
 	if err := snowClient.GetObject(client.EndpointCSSIncludeRelation, data.Id(), cssIncludeRelation); err != nil {
 		data.SetId("")
@@ -54,7 +54,7 @@ func readResourceCSSIncludeRelation(data *schema.ResourceData, serviceNowClient 
 }
 
 func createResourceCSSIncludeRelation(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	cssIncludeRelation := resourceToCSSIncludeRelation(data)
 	if err := snowClient.CreateObject(client.EndpointCSSIncludeRelation, cssIncludeRelation); err != nil {
 		return err
@@ -66,7 +66,7 @@ func createResourceCSSIncludeRelation(data *schema.ResourceData, serviceNowClien
 }
 
 func updateResourceCSSIncludeRelation(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	if err := snowClient.UpdateObject(client.EndpointCSSIncludeRelation, resourceToCSSIncludeRelation(data)); err != nil {
 		return err
 	}
@@ -75,7 +75,7 @@ func updateResourceCSSIncludeRelation(data *schema.ResourceData, serviceNowClien
 }
 
 func deleteResourceCSSIncludeRelation(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	return snowClient.DeleteObject(client.EndpointCSSIncludeRelation, data.Id())
 }
 

@@ -54,7 +54,7 @@ func ResourceRole() *schema.Resource {
 }
 
 func readResourceRole(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	role := &client.Role{}
 	if err := snowClient.GetObject(client.EndpointRole, data.Id(), role); err != nil {
 		data.SetId("")
@@ -67,7 +67,7 @@ func readResourceRole(data *schema.ResourceData, serviceNowClient interface{}) e
 }
 
 func createResourceRole(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	role := resourceToRole(data)
 	if err := snowClient.CreateObject(client.EndpointRole, role); err != nil {
 		return err
@@ -79,7 +79,7 @@ func createResourceRole(data *schema.ResourceData, serviceNowClient interface{})
 }
 
 func updateResourceRole(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	if err := snowClient.UpdateObject(client.EndpointRole, resourceToRole(data)); err != nil {
 		return err
 	}
@@ -88,7 +88,7 @@ func updateResourceRole(data *schema.ResourceData, serviceNowClient interface{})
 }
 
 func deleteResourceRole(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	return snowClient.DeleteObject(client.EndpointRole, data.Id())
 }
 

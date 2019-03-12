@@ -113,7 +113,7 @@ func ResourceWidget() *schema.Resource {
 }
 
 func readResourceWidget(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	widget := &client.Widget{}
 	if err := snowClient.GetObject(client.EndpointWidget, data.Id(), widget); err != nil {
 		data.SetId("")
@@ -126,7 +126,7 @@ func readResourceWidget(data *schema.ResourceData, serviceNowClient interface{})
 }
 
 func createResourceWidget(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	widget := resourceToWidget(data)
 	if err := snowClient.CreateObject(client.EndpointWidget, widget); err != nil {
 		return err
@@ -138,7 +138,7 @@ func createResourceWidget(data *schema.ResourceData, serviceNowClient interface{
 }
 
 func updateResourceWidget(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	if err := snowClient.UpdateObject(client.EndpointWidget, resourceToWidget(data)); err != nil {
 		return err
 	}
@@ -147,7 +147,7 @@ func updateResourceWidget(data *schema.ResourceData, serviceNowClient interface{
 }
 
 func deleteResourceWidget(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	return snowClient.DeleteObject(client.EndpointWidget, data.Id())
 }
 

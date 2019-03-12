@@ -18,7 +18,7 @@ func DataSourceApplication() *schema.Resource {
 }
 
 func readDataSourceApplication(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	application := &client.Application{}
 	if err := snowClient.GetObjectByName(client.EndpointApplication, data.Get(applicationName).(string), application); err != nil {
 		data.SetId("")

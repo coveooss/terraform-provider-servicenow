@@ -38,7 +38,7 @@ func ResourceSystemPropertyCategory() *schema.Resource {
 }
 
 func readResourceSystemPropertyCategory(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	systemPropertyCategory := &client.SystemPropertyCategory{}
 	if err := snowClient.GetObject(client.EndpointSystemPropertyCategory, data.Id(), systemPropertyCategory); err != nil {
 		data.SetId("")
@@ -51,7 +51,7 @@ func readResourceSystemPropertyCategory(data *schema.ResourceData, serviceNowCli
 }
 
 func createResourceSystemPropertyCategory(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	systemPropertyCategory := resourceToSystemPropertyCategory(data)
 	if err := snowClient.CreateObject(client.EndpointSystemPropertyCategory, systemPropertyCategory); err != nil {
 		return err
@@ -63,7 +63,7 @@ func createResourceSystemPropertyCategory(data *schema.ResourceData, serviceNowC
 }
 
 func updateResourceSystemPropertyCategory(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	if err := snowClient.UpdateObject(client.EndpointSystemPropertyCategory, resourceToSystemPropertyCategory(data)); err != nil {
 		return err
 	}
@@ -72,7 +72,7 @@ func updateResourceSystemPropertyCategory(data *schema.ResourceData, serviceNowC
 }
 
 func deleteResourceSystemPropertyCategory(data *schema.ResourceData, serviceNowClient interface{}) error {
-	snowClient := serviceNowClient.(*client.ServiceNowClient)
+	snowClient := serviceNowClient.(client.ServiceNowClient)
 	return snowClient.DeleteObject(client.EndpointSystemPropertyCategory, data.Id())
 }
 
