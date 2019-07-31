@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/coveo/terraform-provider-servicenow/servicenow"
+	"github.com/coveooss/terraform-provider-servicenow/servicenow"
 	"github.com/hashicorp/terraform/plugin"
 	"github.com/hashicorp/terraform/terraform"
 )

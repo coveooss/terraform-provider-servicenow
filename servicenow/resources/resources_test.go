@@ -6,8 +6,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/coveo/terraform-provider-servicenow/servicenow/client"
-	"github.com/coveo/terraform-provider-servicenow/servicenow/resources"
+	"github.com/coveooss/terraform-provider-servicenow/servicenow/client"
+	"github.com/coveooss/terraform-provider-servicenow/servicenow/resources"
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/stretchr/testify/mock"
 )

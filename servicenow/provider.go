@@ -1,8 +1,8 @@
 package servicenow
 
 import (
-	"github.com/coveo/terraform-provider-servicenow/servicenow/client"
-	"github.com/coveo/terraform-provider-servicenow/servicenow/resources"
+	"github.com/coveooss/terraform-provider-servicenow/servicenow/client"
+	"github.com/coveooss/terraform-provider-servicenow/servicenow/resources"
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
