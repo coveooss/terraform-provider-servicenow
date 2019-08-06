@@ -73,6 +73,7 @@ var resourcesToTest = []*schema.Resource{
 	resources.ResourceCSSInclude(),
 	resources.ResourceCSSIncludeRelation(),
 	resources.ResourceDBTable(),
+	resources.ResourceExtensionPoint(),
 	resources.ResourceJsInclude(),
 	resources.ResourceJsIncludeRelation(),
 	resources.ResourceOAuthEntity(),

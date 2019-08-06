@@ -35,6 +35,7 @@ func Provider() *schema.Provider {
 			"servicenow_css_include":                resources.ResourceCSSInclude(),
 			"servicenow_css_include_relation":       resources.ResourceCSSIncludeRelation(),
 			"servicenow_db_table":                   resources.ResourceDBTable(),
+			"servicenow_extension_point":            resources.ResourceExtensionPoint(),
 			"servicenow_js_include":                 resources.ResourceJsInclude(),
 			"servicenow_js_include_relation":        resources.ResourceJsIncludeRelation(),
 			"servicenow_oauth_entity":               resources.ResourceOAuthEntity(),
