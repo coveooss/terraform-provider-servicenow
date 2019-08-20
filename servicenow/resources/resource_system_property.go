@@ -37,9 +37,22 @@ func ResourceSystemProperty() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Default:     "string",
-				Description: "Type of the property. Can be 'string' or 'choicelist'.",
+				Description: "Type of the property. This is used when displaying the input used in the UI to change the property.",
 				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
-					warns, errs = validateStringValue(val.(string), key, []string{"string", "choicelist"})
+					warns, errs = validateStringValue(val.(string), key, []string{
+						"string",
+						"integer",
+						"boolean",
+						"choicelist",
+						"color",
+						"date_format",
+						"image",
+						"password",
+						"password2",
+						"short_string",
+						"time_format",
+						"timezone",
+						"uploaded_image"})
 					return
 				},
 			},
