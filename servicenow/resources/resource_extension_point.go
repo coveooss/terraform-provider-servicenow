@@ -37,7 +37,7 @@ func ResourceExtensionPoint() *schema.Resource {
 			},
 			extensionPointExample: {
 				Type:        schema.TypeString,
-				Required:    true,
+				Optional:    true,
 				Default:     "",
 				Description: "Example implementation code.",
 			},
