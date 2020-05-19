@@ -1,8 +1,6 @@
 language: go
 go:
-- 1.11.x
-
-sudo: false
+- 1.14.x
 
 install:
 - go get github.com/stretchr/testify/assert
@@ -14,7 +12,9 @@ install:
 script:
 - make test
 - go test ./... -covermode=count -coverprofile=coverage.out
-- $HOME/gopath/bin/goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN
+- if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
+    $HOME/gopath/bin/goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN ;
+  fi
 
 after_success:
   - test ${TRAVIS_TAG:0:1} = v && curl -sL https://git.io/goreleaser | bash
