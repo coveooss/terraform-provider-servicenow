@@ -14,6 +14,7 @@ builds:
 
 # Archive customization
 archives:
+-
   format: zip
 
   replacements:
