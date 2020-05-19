@@ -13,7 +13,7 @@ builds:
         goarch: 386
 
 # Archive customization
-archive:
+archives:
   format: zip
 
   replacements:
