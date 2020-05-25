@@ -43,9 +43,9 @@ func ResourceScriptedRestResource() *schema.Resource {
 			scriptedRestResourceHTTPMethod: {
 				Type:        schema.TypeString,
 				Required:    true,
-				Description: "The HTTP method that maps to this record. Can be 'get', 'post', 'put', 'patch' or 'delete'.",
+				Description: "The HTTP method that maps to this record. Can be 'GET', 'POST', 'PUT', 'PATCH' or 'DELETE'.",
 				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
-					warns, errs = validateStringValue(val.(string), key, []string{"get", "post", "put", "patch", "delete"})
+					warns, errs = validateStringValue(val.(string), key, []string{"GET", "POST", "PUT", "PATCH", "DELETE"})
 					return
 				},
 			},
